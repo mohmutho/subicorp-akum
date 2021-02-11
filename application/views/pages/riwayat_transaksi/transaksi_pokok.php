@@ -137,8 +137,9 @@
                       <thead>
                         <tr>
                           <th>No.</th>
-                          <th>Nama Barang</th>
+                          <th>Nama Transaksi</th>
                           <th>Jumlah</th>
+                          <th>Total Harga Retur</th>
                           <th>Tanggal Retur</th>
                           <th>Keterangan</th>
                           <th>Bukti Retur</th>
@@ -155,6 +156,7 @@
                               <td><?php echo $no;?></td>
                               <td><?php echo $obj->nama_barang;?></td>
                               <td><?php echo number_format($obj->jumlah,0, '', '.');?></td>
+                              <td><?php echo number_format($obj->total_harga,0, '', '.');?></td>
                               <td><?php echo $obj->tgl_retur;?></td>
                               <td><?php echo $obj->keterangan;?></td>
                               <td>
@@ -175,8 +177,9 @@
                       <thead>
                         <tr>
                           <th>No.</th>
-                          <th>Nama Barang</th>
+                          <th>Nama Transaksi</th>
                           <th>Jumlah</th>
+                          <th>Total Harga Retur</th>
                           <th>Tanggal Retur</th>
                           <th>Keterangan</th>
                           <th>Bukti Retur</th>
@@ -193,6 +196,7 @@
                               <td><?php echo $no;?></td>
                               <td><?php echo $obj->nama_barang;?></td>
                               <td><?php echo number_format($obj->jumlah,0, '', '.');?></td>
+                              <td><?php echo number_format($obj->total_harga,0, '', '.');?></td>
                               <td><?php echo $obj->tgl_retur;?></td>
                               <td><?php echo $obj->keterangan;?></td>
                               <td>

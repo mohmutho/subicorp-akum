@@ -41,7 +41,10 @@ class Retur extends CI_Controller {
     		'nama_barang' => $this->input->post('pembelian_dari'),
     		'jenis_retur' => 'Pembelian',
     		'jumlah' => $this->input->post('jumlah_retur'),
+        'harga_barang' => $this->input->post('harga_barang'),
+        'total_harga' => $this->input->post('total_harga_retur'),
     		'tgl_retur' => $this->input->post('tanggal'),
+        'tgl_jatuh' => $this->input->post('tanggal_jatuh'),
     		'keterangan' => $this->input->post('keterangan'),
 			'bukti_pembelian' => $bukti_pembelian,
 			'created_date' => date('Y-m-d H:i:s')
@@ -49,12 +52,30 @@ class Retur extends CI_Controller {
 		$this->m_akum->create_retur($data_retur);
 		
 		// Piutang
+    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh'));
+		$tanggal_transaksi = explode("-",$this->input->post('tanggal'));
+
+		if ($tanggal_transaksi[2]>=15) {
+			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		}else{
+			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		}
+		if ($hitung<12) {
+          $status = "Jangka Pendek";
+        } else if($hitung>=12){
+          $status = "Jangka Panjang";
+        }
 		$data_piutang = array(
 			'iduser' => $id,
     		'nama_piutang' => $this->input->post('pembelian_dari'),
-    		'jenis_piutang' => 'retur',
-    		'nilai_piutang' => $this->input->post('jumlah_retur')*$this->input->post('total_harga'),
+    		'jenis_piutang' => 'usaha',
+    		'nilai_piutang' => $this->input->post('total_harga_retur'),
     		'tanggal_transaksi' => $this->input->post('tanggal'),
+        'tanggal_jatuh_tempo' => $this->input->post('tanggal_jatuh'),
+        'bukti_transaksi' => $bukti_pembelian,
+        'status' => $status,
     		'keterangan' => $this->input->post('keterangan'),
     	);
 		$this->m_akum->create_piutang($data_piutang);
@@ -105,7 +126,10 @@ class Retur extends CI_Controller {
     		'nama_barang' => $this->input->post('penjualanke'),
     		'jenis_retur' => 'Penjualan',
     		'jumlah' => $this->input->post('jumlah_retur'),
+        'harga_barang' => $this->input->post('harga_barang'),
+        'total_harga' => $this->input->post('total_harga_retur'),
     		'tgl_retur' => $this->input->post('tanggal'),
+        'tgl_jatuh' => $this->input->post('tanggal_jatuh'),
     		'keterangan' => $this->input->post('keterangan'),
 			'bukti_pembelian' => $bukti_pembelian,
 			'created_date' => date('Y-m-d H:i:s')
@@ -113,12 +137,30 @@ class Retur extends CI_Controller {
 		$this->m_akum->create_retur($data_retur);
 		
 		// Hutang
+    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh'));
+		$tanggal_transaksi = explode("-",$this->input->post('tanggal'));
+
+		if ($tanggal_transaksi[2]>=15) {
+			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		}else{
+			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		}
+		if ($hitung<12) {
+          $status = "Jangka Pendek";
+        } else if($hitung>=12){
+          $status = "Jangka Panjang";
+        }
 		$data_hutang = array(
 			'iduser' => $id,
     		'nama_hutang' => $this->input->post('penjualanke'),
-    		'jenis_hutang' => 'retur',
-    		'nilai_hutang' => $this->input->post('jumlah_retur')*$this->input->post('total_harga'),
+    		'jenis_hutang' => 'usaha',
+    		'nilai_hutang' => $this->input->post('total_harga_retur'),
     		'tgl_transaksi' => $this->input->post('tanggal'),
+        'tgl_jatuh_tempo' => $this->input->post('tanggal_jatuh'),
+        'bukti_transaksi' => $bukti_pembelian,
+        'status' => $status,
     		'keterangan' => $this->input->post('keterangan'),
     	);
 		$this->m_akum->create_hutang($data_hutang);

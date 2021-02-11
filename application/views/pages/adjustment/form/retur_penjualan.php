@@ -16,7 +16,10 @@ if ($main['op']=='edit') {
         $id = $obj->id;
         $nama_barang = $obj->nama_barang;
         $jumlah = $obj->jumlah;
+        $harga_barang = $obj->harga_barang;
+        $total_harga_retur = $obj->total_harga;
         $tanggal = $obj->tgl_retur;
+        $tanggal_jatuh = $obj->tgl_jatuh;
         $bukti_pembelian = $obj->bukti_pembelian;
         $keterangan = $obj->keterangan;
     }
@@ -63,21 +66,27 @@ if ($main['op']=='edit') {
                     <div class="form-group">
                         <label for="inputName" class="col-sm-2 control-label">Nama Transaksi</label>
                         <div class="col-sm-10">
-                            <select id="pilih_retur" name="pembelian_id" class="form-controls-select" onchange='changeValue(this.value)' required>
+                            <select id="pilih_retur" name="penjualan_id" class="form-controls-select" onchange='changeValue(this.value)' required>
                             <option value="">Pilih</option>
                                 <?php
                                     $jsArray = "var prdName = new Array();\n";
                                     foreach($main['sql']->result() as $obj){
-                                        $pembelian_dari = $obj->penjualanke;
+                                        $penjualan_id = $obj->penjualanke;
                                         $jumlah_barang = $obj->jumlah;
                                         $nama_barang_beli = $obj->nama_barang;
+                                        $harga_barang = $obj->harga_barang;
                                         $total_harga_jual = $obj->total_harga;
                                 ?>
-                                <option value="<?php echo $obj->id;?>" <?php if($nama_barang==$pembelian_dari) echo 'selected';?>>
-                                    <?php echo $pembelian_dari;?>
+                                <option value="<?php echo $obj->id;?>" <?php if($nama_barang==$penjualan_id) echo 'selected';?>>
+                                    <?php echo $penjualan_id;?>
                                 </option>
                                 <?php
-                                    $jsArray .= "prdName['". $obj->id . "'] = {jumlah_barang:'" . addslashes($jumlah_barang) . "',nama_barang_beli:'" . addslashes($nama_barang_beli) . "',total_harga_jual:'" . addslashes($total_harga_jual) . "',pembelian_dari:'" . addslashes($pembelian_dari) . "'};\n";
+                                    $jsArray .= "prdName['". $obj->id . "'] = {jumlah_barang:'" . addslashes($jumlah_barang) . 
+                                      "',nama_barang_beli:'" . addslashes($nama_barang_beli) . 
+                                      "',total_harga_jual:'" . addslashes($total_harga_jual) . 
+                                      "',penjualan_id:'" . addslashes($penjualan_id) . 
+                                      "',harga_barang:'" . addslashes($harga_barang) . 
+                                      "'};\n";
                                     }
                                 ?>
                             </select>
@@ -88,7 +97,7 @@ if ($main['op']=='edit') {
                         <div class="col-sm-10">
                             <input readonly type="text" name="nama_barang" id="nama_barang" class="form-controls" placeholder="Nama Barang" value="<?php echo $nm_brg_beli;?>" required>
                             <input readonly type="hidden" name="total_harga" id="total_harga" class="form-controls" placeholder="Nama Barang" value="<?php echo $total_harga;?>" required>
-                            <input readonly type="hidden" name="pembelian_dari" id="pembelian_dari" class="form-controls" placeholder="Nama Barang" value="<?php echo $beli_dari;?>" required>
+                            <input readonly type="hidden" name="penjualan_id" id="penjualan_id" class="form-controls" placeholder="Nama Barang" value="<?php echo $beli_dari;?>" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -97,19 +106,47 @@ if ($main['op']=='edit') {
                             <input readonly type="text" id="jumlah" class="form-controls" placeholder="Jumlah Barang" value="<?php echo $stok;?>" required>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Harga Satuan Barang</label>
+                        <div class="col-sm-10">
+                            <input readonly type="text" name="harga_barang" id="harga_barang" class="form-controls" placeholder="Harga Satuan Barang" value="<?php echo $harga_barang;?>" required>    
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Jumlah Barang Diretur</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="jumlah_retur" class="form-controls" id="jumlah_retur" placeholder="Jumlah Barang Diretur" value="<?php echo $jumlah;?>" oninput="gantiValueJumlah()" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Total Harga Barang diretur</label>
+                        <div class="col-sm-10">
+                            <input readonly type="text" name="total_harga_retur" id="total_harga_retur" class="form-controls" placeholder="Total Harga Barang" value="<?php echo $total_harga_retur;?>" required>    
+                        </div>
+                    </div>
                     <script type="text/javascript">    
                         <?php echo $jsArray; ?>  
                         function changeValue(x){  
                             document.getElementById('nama_barang').value = prdName[x].nama_barang_beli;
                             document.getElementById('jumlah').value = prdName[x].jumlah_barang;
+                            document.getElementById('harga_barang').value = prdName[x].harga_barang;
+                            document.getElementById('penjualan_id').value = prdName[x].penjualan_id;
                             document.getElementById('total_harga').value = prdName[x].total_harga_jual;
-                            document.getElementById('pembelian_dari').value = prdName[x].pembelian_dari;
+                        };
+                        function gantiValueJumlah(){
+                            var valueJumlah = $('#pilih_retur').val();
+                            // console.log(valueJumlah);
+                            var jumlah_barang_retur = document.getElementById('jumlah_retur').value;
+                            // console.log(jumlah_barang_retur);
+                            var total_harga_retur = jumlah_barang_retur * prdName[valueJumlah].harga_barang;
+                            console.log();
+                            document.getElementById('total_harga_retur').value = total_harga_retur;
                         };
                     </script>
                     <div class="form-group">
-                        <label for="inputName" class="col-sm-2 control-label">Jumlah Barang Diretur</label>
+                        <label for="inputName" class="col-sm-2 control-label">Tanggal Jatuh Tempo</label>
                         <div class="col-sm-10">
-                            <input type="text" name="jumlah_retur" class="form-controls" id="jumlah_retur" placeholder="Jumlah Barang Diretur" value="<?php echo $jumlah;?>" required>
+                            <input type="text" name="tanggal_jatuh" class="form-controls" id="datepicker2"  placeholder="Tanggal Jatuh Tempo" value="<?php echo $tanggal_jatuh;?>" required>
                         </div>
                     </div>
                     <div class="form-group">

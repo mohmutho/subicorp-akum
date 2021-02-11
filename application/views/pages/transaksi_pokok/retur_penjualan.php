@@ -41,13 +41,19 @@
                                         $penjualanke = $obj->penjualanke;
                                         $jumlah = $obj->jumlah;
                                         $nama_barang = $obj->nama_barang;
+                                        $harga_barang = $obj->harga_barang;
                                         $total_harga = $obj->total_harga;
                                 ?>
                                 <option value="<?php echo $obj->id;?>">
                                     <?php echo $penjualanke;?>
                                 </option>
                                 <?php
-                                    $jsArray .= "prdName['". $obj->id . "'] = {jumlah:'" . addslashes($jumlah) . "',nama_barang:'" . addslashes($nama_barang) . "',total_harga:'" . addslashes($total_harga) . "',penjualanke:'" . addslashes($penjualanke) . "'};\n";
+                                    $jsArray .= "prdName['". $obj->id . "'] = {jumlah:'" . addslashes($jumlah) . 
+                                      "',nama_barang:'" . addslashes($nama_barang) . 
+                                      "',total_harga:'" . addslashes($total_harga) . 
+                                      "',penjualanke:'" . addslashes($penjualanke) . 
+                                      "',harga_barang:'" . addslashes($harga_barang) . 
+                                      "'};\n";
                                     }
                                 ?>
                             </select>
@@ -57,8 +63,9 @@
                         <label for="inputName" class="col-sm-2 control-label">Nama Barang</label>
                         <div class="col-sm-10">
                             <input readonly type="text" name="nama_barang" id="nama_barang" class="form-controls" placeholder="Nama Barang" required>
-                            <input readonly type="hidden" name="total_harga" id="total_harga" class="form-controls" placeholder="Nama Barang" required>
-                            <input readonly type="hidden" name="penjualanke" id="penjualanke" class="form-controls" placeholder="Nama Barang" required>
+                            <!-- <input readonly type="hidden" name="total_harga" id="total_harga" class="form-controls" placeholder="Total Harga" required> -->
+                            <input readonly type="hidden" name="penjualanke" id="penjualanke" class="form-controls" placeholder="Penjualan Ke" required>
+                            <!-- <input readonly type="hidden" name="harga_barang" id="harga_barang" class="form-controls" placeholder="Harga Barang" required> -->
                         </div>
                     </div>
                     <div class="form-group">
@@ -67,19 +74,48 @@
                             <input readonly type="text" id="jumlah" class="form-controls" placeholder="Jumlah Barang" required>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Harga Satuan Barang</label>
+                        <div class="col-sm-10">
+                            <input readonly type="text" name="harga_barang" id="harga_barang" class="form-controls" placeholder="Harga Satuan Barang" required>    
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Jumlah Barang Diretur</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="jumlah_retur" class="form-controls" id="jumlah_retur" placeholder="Jumlah Barang Diretur" oninput=gantiValueJumlah() required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Total Harga Barang diretur</label>
+                        <div class="col-sm-10">
+                            <input readonly type="text" name="total_harga_retur" id="total_harga_retur" class="form-controls" placeholder="Total Harga Barang" required>    
+                        </div>
+                    </div>
                     <script type="text/javascript">    
                         <?php echo $jsArray; ?>  
                         function changeValue(x){  
                             document.getElementById('nama_barang').value = prdName[x].nama_barang;
                             document.getElementById('jumlah').value = prdName[x].jumlah;
-                            document.getElementById('total_harga').value = prdName[x].total_harga;
+                            document.getElementById('harga_barang').value = prdName[x].harga_barang;
                             document.getElementById('penjualanke').value = prdName[x].penjualanke;
+                            // document.getElementById('total_harga').value = prdName[x].total_harga;
+                            // var jumlah_barang_retur = document.getElementById('jumlah_retur').value;
+                            // var total_harga_retur = jumlah_barang_retur * prdName[x].harga_barang;
+                            // document.getElementById('total_harga_retur').value = total_harga_retur;
+                        };
+                        function gantiValueJumlah(){
+                            var valueJumlah = $('#pilih_retur').val();
+                            // console.log(valueJumlah);
+                            var jumlah_barang_retur = document.getElementById('jumlah_retur').value;
+                            var total_harga_retur = jumlah_barang_retur * prdName[valueJumlah].harga_barang;
+                            document.getElementById('total_harga_retur').value = total_harga_retur;
                         };
                     </script>
                     <div class="form-group">
-                        <label for="inputName" class="col-sm-2 control-label">Jumlah Barang Diretur</label>
+                        <label for="inputName" class="col-sm-2 control-label">Tanggal Jatuh Tempo</label>
                         <div class="col-sm-10">
-                            <input type="text" name="jumlah_retur" class="form-controls" id="jumlah_retur" placeholder="Jumlah Barang Diretur" required>
+                            <input type="text" name="tanggal_jatuh" class="form-controls" id="datepicker2"  placeholder="Tanggal Jatuh Tempo" required>
                         </div>
                     </div>
                     <div class="form-group">
