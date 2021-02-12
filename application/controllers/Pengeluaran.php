@@ -339,9 +339,11 @@ class Pengeluaran extends CI_Controller {
 	function create_pengeluaran_modal() {
 		$id = $this->session->userdata('id');
 		$query = $this->db->query('SELECT * FROM saldo_kas where iduser = '.$id.'');
-		$saldo_kas = 0;
+		$modal_disetor = 0;
+    $saldo_kas = 0;
 		foreach ($query->result() as $val) {
 			$saldo_kas+=$val->saldo_kas;
+      $modal_disetor+=$val->modal_disetor;
 		}
 		$filename = date("YmdHis")."_".$id;
 		$config = array(
@@ -380,7 +382,8 @@ class Pengeluaran extends CI_Controller {
 		
 		// Saldo Kas
 		$data_saldo = array(
-			'saldo_kas' => $saldo_kas - $this->input->post('jumlah_modal')
+			'saldo_kas' => $saldo_kas - $this->input->post('jumlah_modal'),
+      'modal_disetor' => $modal_disetor - $this->input->post('jumlah_modal')
     	);
 		$this->m_akum->update_saldo_kas($id,$data_saldo);
 		
