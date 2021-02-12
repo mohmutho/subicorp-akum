@@ -43,6 +43,7 @@
                         $saldo_kas = $obj->saldo_kas;
                         $saldo_bank = $obj->saldo_bank;
                         $surat_berharga = $obj->surat_berharga;
+                        $modal_disetor = $onj->modal_disetor;
                       ?>
                       <td class="text-right">Rp. <?php echo number_format($saldo_kas,0,'','.');?></td>
                       <?php
@@ -276,13 +277,13 @@
                   </tr>
                   <tr>
                     <td>Modal Pemilik</td>
-                    <?php
+                    <!-- <?php
                     $modal_pemilik=0;
                     foreach($main['saldo_kas']->result() as $obj){
                       $modal_pemilik+= $obj->modal_disetor;
                     }
-                    ?> 
-                    <td class="text-right">Rp. <?php echo number_format($modal_pemilik,0,'','.')?></td>
+                    ?>  -->
+                    <td class="text-right">Rp. <?php echo number_format($modal_disetor,0,'','.')?></td>
                   </tr>
                   <tr>
                     <td>Laba Rugi</td>

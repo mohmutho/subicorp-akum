@@ -22,7 +22,7 @@
                 
             </div>
             <div class="box-body form-horizontal">
-              <?php echo form_open_multipart('adjustmentpemasukan/create_pemasukan_modal/');?>
+              <?php echo form_open_multipart('adjustment/pemasukan/create_pemasukan_modal/');?>
                 <div class="autoSum">
                   <div class="form-group">
                       <label for="inputName" class="col-sm-2 control-label">Jumlah Modal</label>
