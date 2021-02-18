@@ -77,6 +77,22 @@ class Transaksi_pokok extends CI_Controller {
 		$finfo = $this->upload->data();
 		$bukti_hutang = $finfo['file_name'];
 
+    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
+		$tanggal_transaksi = explode("-",$this->input->post('tanggal_pembelian'));
+
+		if ($tanggal_transaksi[2]>=15) {
+			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		}else{
+			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		}
+		if ($hitung<12) {
+          $status = "Jangka Pendek";
+        } else if($hitung>=12){
+          $status = "Jangka Panjang";
+        }
+
 		if ($tipe_pembayaran=='Cash') {
 			// Saldo Kas
 			$data_saldo_kas = array(
@@ -95,10 +111,10 @@ class Transaksi_pokok extends CI_Controller {
 				'jenis_hutang_lainnya' => '',
 				'nilai_hutang' => $this->input->post('total_harga'),
 				'tgl_transaksi' => $this->input->post('tanggal_pembelian'),
-				'tgl_jatuh_tempo' => '',
+				'tgl_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
 				'bukti_transaksi' => $bukti_hutang,
 				'keterangan' => $this->input->post('notes_harga_lainnya'),
-				'status' => ''
+				'status' => $status
 			);
 			$this->m_akum->create_hutang($data_hutang);
 			$cash = "";
@@ -118,10 +134,10 @@ class Transaksi_pokok extends CI_Controller {
 				'jenis_hutang_lainnya' => '',
 				'nilai_hutang' => $this->input->post('sisa_kredit'),
 				'tgl_transaksi' => $this->input->post('tanggal_pembelian'),
-				'tgl_jatuh_tempo' => '',
+				'tgl_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
 				'bukti_transaksi' => $bukti_hutang,
 				'keterangan' => $this->input->post('notes_harga_lainnya'),
-				'status' => ''
+				'status' => $status
 			);
 			$this->m_akum->create_hutang($data_hutang);
 			$cash = $this->input->post('cash');
@@ -160,7 +176,8 @@ class Transaksi_pokok extends CI_Controller {
 				'satuan' => $this->input->post('satuan'),
 				'harga_satuan' => $this->input->post('harga_barang'),
 				// 'total_nilai_barang' => $this->input->post('jumlah') * $this->input->post('harga_barang'),
-				'total_nilai_barang' => $this->input->post('total_harga')
+				'total_nilai_barang' => $this->input->post('nilai_barang'),
+        'total_harga_barang' => $this->input->post('total_harga')
 			);
 			$this->m_akum->create_barang_dagang($data_barang_dagangan);
 		}else{
@@ -237,55 +254,80 @@ class Transaksi_pokok extends CI_Controller {
 		$finfo = $this->upload->data();
 		$bukti_piutang = $finfo['file_name'];
 
+    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
+		$tanggal_transaksi = explode("-",$this->input->post('tanggal_penjualan'));
+
+		if ($tanggal_transaksi[2]>=15) {
+			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		}else{
+			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		}
+		if ($hitung<12) {
+          $status = "Jangka Pendek";
+        } else if($hitung>=12){
+          $status = "Jangka Panjang";
+        }
+
 		if ($tipe_pembayaran=='Cash') {
 			// Saldo Kas
-        	$data_saldo = array(
-				'saldo_kas' => $saldo_kas+$this->input->post('total_harga')
-	    	);
+      $data_saldo = array(
+        'iduser' => $id,
+        'saldo_kas' => $saldo_kas+$this->input->post('total_harga')
+      );
 			$this->m_akum->update_saldo_kas($id,$data_saldo);
 			$cash = $this->input->post('total_harga');
 			$kredit = "";
-        }else if ($tipe_pembayaran=='Kredit') {
+    }
+    
+    else if ($tipe_pembayaran=='Kredit') {
 			// Piutang
-        	$data_piutang = array(
-				'iduser' => $id,
-	    		'jenis_piutang' => "usaha",
-	    		'nama_piutang' => $this->input->post('penjualanke'),
-	    		'nilai_piutang' => $this->input->post('total_harga'),
-	    		'tanggal_transaksi' => $this->input->post('tanggal_penjualan'),
-	    		'tanggal_jatuh_tempo' => date('Y-m-d'),
-	    		'bukti_transaksi' => $bukti_piutang,
-	    		'keterangan' => $this->input->post('notes_harga_lainnya')
-	    	);
+      $data_piutang = array(
+        'iduser' => $id,
+        'jenis_piutang' => "usaha",
+        'nama_piutang' => $this->input->post('penjualanke'),
+        'nilai_piutang' => $this->input->post('total_harga'),
+        'tanggal_transaksi' => $this->input->post('tanggal_penjualan'),
+        'tanggal_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
+        'bukti_transaksi' => $bukti_piutang,
+        'keterangan' => $this->input->post('notes_harga_lainnya'),
+        'status' => $status
+      );
 			$this->m_akum->create_piutang($data_piutang);
 			$cash = "";
 			$kredit = $this->input->post('total_harga');
-        }else{
+
+    }
+    
+    else if ($tipe_pembayaran=='Cash dan Kredit'){
 			// Saldo Kas
-        	$data_saldo = array(
-				'saldo_kas' => $saldo_kas+$this->input->post('cash')
-	    	);
-	        $this->m_akum->update_saldo_kas($id,$data_saldo);
+      $data_saldo = array(
+        'iduser' => $id,
+        'saldo_kas' => $saldo_kas+$this->input->post('cash')
+      );
+      $this->m_akum->update_saldo_kas($id,$data_saldo);
 
 			// Piutang
-	        $data_piutang = array(
-				'iduser' => $id,
-	    		'jenis_piutang' => "usaha",
-	    		'nama_piutang' => $this->input->post('penjualanke'),
-	    		'nilai_piutang' => $this->input->post('sisa_kredit'),
-	    		'tanggal_transaksi' => $this->input->post('tanggal_penjualan'),
-	    		'tanggal_jatuh_tempo' => date('Y-m-d'),
-	    		'bukti_transaksi' => $bukti_piutang,
-	    		'keterangan' => $this->input->post('notes_harga_lainnya')
-	    	);
+      $data_piutang = array(
+        'iduser' => $id,
+        'jenis_piutang' => "usaha",
+        'nama_piutang' => $this->input->post('penjualanke'),
+        'nilai_piutang' => $this->input->post('sisa_kredit'),
+        'tanggal_transaksi' => $this->input->post('tanggal_penjualan'),
+        'tanggal_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
+        'bukti_transaksi' => $bukti_piutang,
+        'keterangan' => $this->input->post('notes_harga_lainnya'),
+        'status' => $status
+      );
 			$this->m_akum->create_piutang($data_piutang);
 			$cash = $this->input->post('cash');
 			$kredit = $this->input->post('sisa_kredit');
-        }
+    }
 
 		// Penjualan
 		$data_penjualan = array(
-			'iduser' => $id,
+			  'iduser' => $id,
     		'penjualanke' => $this->input->post('penjualanke'),
     		'nama_barang' => $this->input->post('nama_barang'),
     		'jenis_barang' => $this->input->post('jenis_barang'),
@@ -303,14 +345,14 @@ class Transaksi_pokok extends CI_Controller {
     		'tanggal_penjualan' => $this->input->post('tanggal_penjualan'),
     		'bukti_penjualan' => $bukti_transaksi,
     		'notes_harga_lainnya' => $this->input->post('notes_harga_lainnya'),
-			'created_date' => date('Y-m-d H:i:s')
+			  'created_date' => date('Y-m-d H:i:s')
     	);
         $this->m_akum->create_transaksi_pokok_penjualan($data_penjualan);
 
 		// Barang Dagangan
         $data_barang = array(
         	'jumlah_barang' => $this->input->post('jumlah') - $this->input->post('jumlah_barang'),
-        	'total_nilai_barang' => $this->input->post('harga_satuan') * ($this->input->post('jumlah') - $this->input->post('jumlah_barang'))
+        	'total_nilai_barang' => ($this->input->post('jumlah')*$this->input->post('harga_barang_satuan')) - ($this->input->post('harga_barang_satuan')*$this->input->post('jumlah_barang'))
         );
         $this->m_akum->edit_barang_dagang($id_barang,$data_barang);
 

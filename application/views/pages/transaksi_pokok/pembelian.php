@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">Jumlah Barang</label>
                     <div class="col-sm-10">
-                        <input type="number" id="jumlah_barang" onkeyup="total();" name="jumlah" class="form-controls" placeholder="Jumlah Barang" required>
+                        <input type="number" id="jumlah_barang" name="jumlah" class="form-controls" placeholder="Jumlah Barang" required>
                         <input type="text" id="jml_brg" value="" class="span-block" readonly>
                     </div>
                 </div>
@@ -72,14 +72,21 @@
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">Harga Satuan</label>
                     <div class="col-sm-10">
-                        <input type="number" id="harga_satuan" onkeyup="total();" name="harga_barang" class="form-controls" id="inputName" placeholder="Harga Satuan Barang" required>
+                        <input type="number" id="harga_satuan" name="harga_barang" class="form-controls" id="inputName" placeholder="Harga Satuan Barang" required>
                         <input type="text" id="hrg_brg" value="" class="span-block" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputName" class="col-sm-2 control-label">Nilai Harga Barang</label>
+                    <div class="col-sm-10">
+                        <input readonly type="text" id="nilai_harga_barang" class="form-controls" id="inputName" placeholder="Nilai Harga Barang" required>
+                        <input type="hidden" id="nilai_hrg_brg" name="nilai_barang" class="span-block" readonly>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">Diskon Pembelian</label>
                     <div class="col-sm-10">
-                        <input type="number" id="diskon" onkeyup="total();" name="diskon" class="form-controls" id="inputName" placeholder="Diskon Pembelian" value="0" required>
+                        <input type="number" id="diskon" name="diskon" class="form-controls" id="inputName" placeholder="Diskon Pembelian" value="0" required>
                         <input type="text" id="dsk" value="" class="span-block" readonly>
                     </div>
                 </div>
@@ -87,7 +94,7 @@
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">Biaya Lain-lain</label>
                     <div class="col-sm-10">
-                        <input type="number" id="biaya_lain" onkeyup="total();" name="harga_lainnya" class="form-controls" id="inputName" placeholder="Harga Lain-lain" value="0" required>
+                        <input type="number" id="biaya_lain" name="harga_lainnya" class="form-controls" id="inputName" placeholder="Harga Lain-lain" value="0" required>
                         <input type="text" id="hrg_lain" value="" class="span-block" readonly>
                     </div>
                 </div>
@@ -138,6 +145,14 @@
                         </div>
                     </div>
                 </div>
+                <div id="formdate" style="display : none;">
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Tanggal Jatuh Tempo</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="tanggal_jatuh_tempo" class="form-controls" id="datepicker2" placeholder="Tanggal Penjualan">
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label"></label>
                     <div class="col-sm-10">
@@ -152,12 +167,18 @@
                         var diskon = parseInt($("#diskon").val())
                         var biaya_lain = parseInt($("#biaya_lain").val())
                         var cash = parseInt($("#cash").val())
-                        
-                        var total = ((jumlah_barang * harga_satuan) - diskon) + biaya_lain;
+
+                        var nilai_barang = jumlah_barang * harga_satuan;
+                        $("#nilai_hrg_brg").attr("value",nilai_barang);
+
+                        var nilai_hrg_brg = formatRupiah($("#nilai_hrg_brg").val());
+                        $('#nilai_harga_barang').attr("value","Rp. " +nilai_hrg_brg);
+
+                        var total = (nilai_barang - diskon) + biaya_lain;
                         $("#ttl_hrg").attr("value",total);
 
                         var ttl_hrg = formatRupiah($("#ttl_hrg").val())
-                        $("#total").attr("value","Rp "+ttl_hrg);
+                        $("#total").attr("value","Rp. "+ttl_hrg);
 
                         if (cash>total) {
                             alert('Nilai Cash tidak boleh melebihi Total Nilai Transaksi!');
@@ -183,12 +204,18 @@
 
                     });
                     var x = document.getElementById("formck");
+                    var y = document.getElementById("formdate");
                     function show_value(val){
-                        if (val=='Cash dan Kredit') {
-                            x.style.display = "block";
-                        }else{
-                            x.style.display = "none";
-                        }
+                      if (val=='Cash dan Kredit') {
+                          x.style.display = "block";
+                          y.style.display = "block";
+                      }else if(val=='Kredit'){
+                          x.style.display = "none";
+                          y.style.display = "block";
+                      }else{
+                          x.style.display = "none";
+                          y.style.display = "none";
+                      }
                     }
                     function formatRupiah(angka, prefix)
                     {

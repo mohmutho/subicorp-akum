@@ -135,7 +135,6 @@
                           <tr>
                               <td><?php echo $no;?></td>
                               <td><?php echo $obj->nama_piutang;?></td>
-                              <td>Rp. <?php echo number_format($obj->nilai_piutang,0,'','.');?></td>
                               <td>Rp. <?php echo number_format($obj->nilai_bayar,0,'','.');?></td>
                               <td><?php echo $obj->tanggal;?></td>
                               <td><?php echo $obj->ket;?></td>
@@ -174,7 +173,6 @@
                           <tr>
                               <td><?php echo $no;?></td>
                               <td><?php echo $obj->nama_piutang;?></td>
-                              <td>Rp. <?php echo number_format($obj->nilai_piutang,0,'','.');?></td>
                               <td>Rp. <?php echo number_format($obj->nilai_bayar,0,'','.');?></td>
                               <td><?php echo $obj->tanggal;?></td>
                               <td><?php echo $obj->ket;?></td>

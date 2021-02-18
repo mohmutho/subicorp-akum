@@ -447,10 +447,10 @@ class Pemasukan extends CI_Controller {
 			'jenis_transaksi' => 'Piutang Lainnya',
 			'nama_transaksi' => $this->input->post('nama_piutang'),
 			'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
-    		'nilai_transaksi' => $this->input->post('nilai_piutang'),
+    	'nilai_transaksi' => $this->input->post('nilai_piutang'),
 			'jenis_pembayaran' => 'Cash',
 			'cash' => $this->input->post('nilai_piutang'),
-    		'bukti_bayar' => $bukti_transaksi
+    	'bukti_bayar' => $bukti_transaksi
     	);
 		$this->m_akum->create_pemasukan($data_pemasukan);
 
@@ -476,7 +476,11 @@ class Pemasukan extends CI_Controller {
 	public function penjualan_asset(){
 		$data['title'] = 'Akum';
 		$data['sql'] = $this->db->query("SELECT * FROM activa_tetap WHERE status = 'Aktif' AND iduser = ".$this->session->userdata('id')."");
+    $data['sql4'] = $this->db->query("SELECT * FROM activa_tetap WHERE status = 'Aktif' AND jenis_activa='Tanah' AND iduser=".$this->session->userdata('id')."");
+    $data['sql5'] = $this->db->query("SELECT * FROM activa_tetap WHERE status = 'Aktif' AND jenis_activa='Tanah dan Bangunan' AND iduser=".$this->session->userdata('id')."");
 		$data['sql3'] = $this->db->query("SELECT * FROM activa_lainnya WHERE status = 'Aktif' AND iduser = ".$this->session->userdata('id')."");
+    $data['sql6'] = $this->db->query("SELECT * FROM activa_lainnya WHERE status = 'Aktif' AND jenis_activa='BEKAS' AND iduser = ".$this->session->userdata('id')."");
+    $data['sql7'] = $this->db->query("SELECT * FROM activa_lainnya WHERE status = 'Aktif' AND jenis_activa='BARU' AND iduser = ".$this->session->userdata('id')."");
 		$data['sql2'] = $this->db->query("SELECT * FROM saldo_kas WHERE iduser = ".$this->session->userdata('id')."");
 		$data['sidebar'] = $this->load->view('layouts/sidebar_dashboard','',true);
         $data['pages'] = $this->load->view('pages/transaksi_lainnya/penjualan_asset',array('main'=>$data),true);
@@ -487,17 +491,34 @@ class Pemasukan extends CI_Controller {
 		$jenis_asset = $this->input->post('pilih_jenis_asset');
 		$tipe_pembayaran = $this->input->post('jenis_pembayaran');
 		$saldo_kas = $this->input->post('saldo_kas');
-		if ($jenis_asset=="Tanah" OR $jenis_asset=="Tanah dan Bangunan") {
-			$idasset = $this->input->post('id_asset');
-			$query = $this->db->query('SELECT * FROM activa_tetap WHERE id = "'.$idasset.'"');
+    //dirubah
+		if ($jenis_asset=="Tanah") {
+			$idasset = $this->input->post('id_asset_tanah');
+			$query = $this->db->query("SELECT * FROM activa_tetap WHERE jenis_activa='Tanah' AND id = ".$idasset."");
 			// Activa Tetap
 			$data_actetap = array(
 				'status' => 'Jual'
 			);
 			$this->m_akum->edit_activa_tetap($idasset,$data_actetap);
-		}else{
-			$idasset = $this->input->post('id_asset_lainnya');
-			$query = $this->db->query('SELECT * FROM activa_lainnya WHERE id = "'.$idasset.'"');
+		}elseif($jenis_asset=="Tanah dan Bangunan"){
+			$idasset = $this->input->post('id_asset_tanah_dan_bangunan');
+			$query = $this->db->query("SELECT * FROM activa_tetap WHERE jenis_activa='Tanah dan Bangunan' AND id = ".$idasset."");
+			// Activa Lainnya
+			$data_actlain = array(
+				'status' => 'Jual'
+			);
+			$this->m_akum->edit_activa_tetap($idasset,$data_actlain);
+		}elseif($jenis_asset=="BARU"){
+			$idasset = $this->input->post('id_asset_lainnya_baru');
+			$query = $this->db->query("SELECT * FROM activa_lainnya WHERE jenis_activa='BARU' AND id = ".$idasset."");
+			// Activa Lainnya
+			$data_actlain = array(
+				'status' => 'Jual'
+			);
+			$this->m_akum->edit_activa_lainnya($idasset,$data_actlain);
+		}elseif($jenis_asset=="BEKAS"){
+			$idasset = $this->input->post('id_asset_lainnya_bekas');
+			$query = $this->db->query("SELECT * FROM activa_lainnya WHERE jenis_activa='BEKAS' AND id = ".$idasset."");
 			// Activa Lainnya
 			$data_actlain = array(
 				'status' => 'Jual'
@@ -529,48 +550,70 @@ class Pemasukan extends CI_Controller {
 		$this->upload->do_upload('photo');
 		$finfo = $this->upload->data();
 		$bukti_piutang = $finfo['file_name'];
+    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
+    $tanggal_transaksi = explode("-",$this->input->post('tanggal_transaksi'));
 
+    if ($tanggal_transaksi[2]>=15) {
+      $hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+      $hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+    }else{
+      $hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
+      $hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+    }
+
+    if ($hitung<12) {
+        $status = "Jangka Pendek";
+    } else if($hitung>=12){
+        $status = "Jangka Panjang";
+    }
 		if ($tipe_pembayaran=='Cash') {
 			// Saldo Kas
-        	$data_saldo = array(
-				'saldo_kas' => $saldo_kas+$this->input->post('total')
-	    	);
+      $data_saldo = array(
+				'saldo_kas' => $saldo_kas+$cash
+	    );
 			$this->m_akum->update_saldo_kas($id,$data_saldo);
-			$cash = $this->input->post('total');
-			$kredit = "";
-        }else if ($tipe_pembayaran=='Kredit') {
+      $kredit = "";
+      $cash = $this->input->post('total');
+    }else if ($tipe_pembayaran=='Kredit') {
 			// Piutang
-        	$data_piutang = array(
-				'iduser' => $id,
-	    		'jenis_piutang' => "usaha",
-	    		'nama_piutang' => $nama_asset,
-	    		'nilai_piutang' => $this->input->post('total'),
-	    		'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
-	    		'bukti_transaksi' => $bukti_piutang
-	    	);
+      $data_piutang = array(
+        'iduser' => $id,
+        'jenis_piutang' => "lainnya",
+        'jenis_piutang_lainnya' => "penjualan_asset",
+        'nama_piutang' => $nama_asset,
+        'nilai_piutang' => $this->input->post('total'),
+        'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
+        'tanggal_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
+        'status' => $status,
+        'bukti_transaksi' => $bukti_piutang
+      );
 			$this->m_akum->create_piutang($data_piutang);
 			$cash = "";
 			$kredit = $this->input->post('total');
-        }else{
+    }else if($tipe_pembayaran=='Cash dan Kredit'){
 			// Saldo Kas
-        	$data_saldo = array(
-				'saldo_kas' => $saldo_kas+$this->input->post('cash')
+        $data_saldo = array(
+				  'saldo_kas' => $saldo_kas+$this->input->post('cash')
 	    	);
-	        $this->m_akum->update_saldo_kas($id,$data_saldo);
+	      $this->m_akum->update_saldo_kas($id,$data_saldo);
 
 			// Piutang
-	        $data_piutang = array(
-				'iduser' => $id,
-	    		'jenis_piutang' => "usaha",
+	      $data_piutang = array(
+				  'iduser' => $id,
+	    		'jenis_piutang' => "lainnya",
+          'jenis_piutang_lainnya' => "penjualan_asset",
 	    		'nama_piutang' => $nama_asset,
 	    		'nilai_piutang' => $this->input->post('sisa_kredit'),
 	    		'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
+          'tanggal_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
+          'status' => $status,
+          'keterangan' => "Piutang dari Transaksi Lainnya",
 	    		'bukti_transaksi' => $bukti_piutang
 	    	);
 			$this->m_akum->create_piutang($data_piutang);
 			$cash = $this->input->post('cash');
 			$kredit = $this->input->post('sisa_kredit');
-        }
+    }
 		
 		// Pemasukan
 		$data_pemasukan = array(
@@ -578,11 +621,11 @@ class Pemasukan extends CI_Controller {
 			'jenis_transaksi' => 'Penjualan Asset',
 			'nama_transaksi' => $nama_asset,
 			'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
-    		'nilai_transaksi' => $this->input->post('total'),
+    	'nilai_transaksi' => $this->input->post('total'),
 			'jenis_pembayaran' => $tipe_pembayaran,
 			'cash' => $cash,
 			'kredit' => $kredit,
-    		'bukti_bayar' => $bukti_transaksi
+    	'bukti_bayar' => $bukti_transaksi
     	);
 		$this->m_akum->create_pemasukan($data_pemasukan);
 

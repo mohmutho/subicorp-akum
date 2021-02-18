@@ -93,7 +93,7 @@
                     <?php
                     $persediaan=0;
                     foreach($main['persediaan']->result() as $obj){
-                        $persediaan+= $obj->total_nilai_barang;
+                        $persediaan+= $obj->harga_satuan * $obj->jumlah_barang;
                     }
                     ?>
                     <td class="text-right">Rp. <?php echo number_format($persediaan,0,'','.')?></td>

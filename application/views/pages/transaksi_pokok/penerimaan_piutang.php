@@ -66,7 +66,7 @@
                         };
                     </script>
                     <div class="form-group">
-                        <label for="inputName" class="col-sm-2 control-label">Nili Yang Diterima</label>
+                        <label for="inputName" class="col-sm-2 control-label">Nilai Yang Diterima</label>
                         <div class="col-sm-10">
                             <input type="text" name="nilai_bayar" id="nilai_bayar" class="form-controls" placeholder="Nilai Yang Diterima" required>
                             <input type="text" id="nl_byr" value="" class="span-block" readonly>

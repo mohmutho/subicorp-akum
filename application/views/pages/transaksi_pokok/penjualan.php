@@ -47,12 +47,17 @@
                                     $sbarang = $obj->satuan;
                                     $nmbarang = $obj->nama_barang;
                                     $jmbarang = $obj->jumlah_barang;
+                                    $harga_satuan = $obj->harga_satuan
                             ?>
                             <option value="<?php echo $obj->id;?>">
                                 <?php echo $obj->nama_barang;?>
                             </option>
                             <?php
-                                $jsArray .= "prdName['". $obj->id . "'] = {jenis_barang:'" . addslashes($jbarang) . "',satuan:'" . addslashes($sbarang) . "',nama_barang:'" . addslashes($nmbarang) . "',jumlah_barang:'" . addslashes($jmbarang) . "'};\n";
+                                $jsArray .= "prdName['". $obj->id . "'] = {jenis_barang:'" . addslashes($jbarang) . 
+                                  "',satuan:'" . addslashes($sbarang) . 
+                                  "',nama_barang:'" . addslashes($nmbarang) . 
+                                  "',harga_satuan:'" . addslashes($harga_satuan) . 
+                                  "',jumlah_barang:'" . addslashes($jmbarang) . "'};\n";
                                 }
                             ?>
                         </select>
@@ -82,7 +87,7 @@
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">Jumlah Barang</label>
                     <div class="col-sm-10">
-                        <input type="text" id="jumlah_barang" onkeyup="total();" name="jumlah_barang" class="form-controls" placeholder="Jumlah Barang" required>
+                        <input type="text" id="jumlah_barang" name="jumlah_barang" class="form-controls" placeholder="Jumlah Barang" required>
                         <input type="text" id="jml_brg" value="" class="span-block" readonly>
                     </div>
                 </div>
@@ -93,16 +98,22 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputName" class="col-sm-2 control-label">Harga Satuan</label>
+                    <label for="inputName" class="col-sm-2 control-label">Harga Barang Satuan</label>
                     <div class="col-sm-10">
-                        <input type="text" id="hrg_st" onkeyup="total();" name="harga_satuan"  class="form-controls" value="0" id="inputName" placeholder="Harga Satuan Barang" required>
+                        <input readonly type="text" id="harga_barang_satuan" name="harga_barang_satuan" class="form-controls" id="inputName" placeholder="Satuan" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputName" class="col-sm-2 control-label">Harga Penjualan Satuan</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="hrg_st" name="harga_satuan"  class="form-controls" value="0" id="inputName" placeholder="Harga Satuan Barang" required>
                         <input type="text" id="harga_satuan" class="span-block" readonly>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">Diskon Pembelian</label>
                     <div class="col-sm-10">
-                        <input type="text" id="diskon" onkeyup="total();" name="diskon" class="form-controls" value="0" placeholder="Diskon Pembelian (Isikon 0 (nol) jika tidak ada)" required>
+                        <input type="text" id="diskon" name="diskon" class="form-controls" value="0" placeholder="Diskon Pembelian (Isikon 0 (nol) jika tidak ada)" required>
                         <input type="text" id="dsk" value="" class="span-block" readonly>
                     </div>
                 </div>
@@ -116,7 +127,7 @@
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">Biaya Lain-lain</label>
                     <div class="col-sm-10">
-                        <input type="text" id="harga_lainnya" onkeyup="total();" name="harga_lainnya" class="form-controls" value="0" placeholder="Harga Lain-lain (Isikon 0 (nol) jika tidak ada)" required>
+                        <input type="text" id="harga_lainnya" name="harga_lainnya" class="form-controls" value="0" placeholder="Harga Lain-lain (Isikon 0 (nol) jika tidak ada)" required>
                         <input type="text" id="hrg_ln" value="" class="span-block" readonly>
                     </div>
                 </div>
@@ -163,6 +174,14 @@
                         <div class="col-sm-10">
                             <input readonly type="text" id="sisa_kredit" class="form-controls" placeholder="Kredit">
                             <input type="hidden" id="ss_krdt" name="sisa_kredit" value="" class="span-block" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div id="formdate" style="display : none;">
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Tanggal Jatuh Tempo</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="tanggal_jatuh_tempo" class="form-controls" id="datepicker2" placeholder="Tanggal Penjualan">
                         </div>
                     </div>
                 </div>
@@ -219,18 +238,25 @@
                     $("#sisa_kredit").attr("value","Rp. "+ss_krdt);
                     });
                   var x = document.getElementById("formck");
+                  var y = document.getElementById("formdate");
                   function show_value(val){
                     if (val=='Cash dan Kredit') {
-                        x.style.display = "block";
-                    }else{
-                        x.style.display = "none";
-                    }
+                          x.style.display = "block";
+                          y.style.display = "block";
+                      }else if(val=='Kredit'){
+                          x.style.display = "none";
+                          y.style.display = "block";
+                      }else{
+                          x.style.display = "none";
+                          y.style.display = "none";
+                      }
                   }
                   <?php echo $jsArray; ?>
                     function changeValue(x){
                         document.getElementById('jumlah').value = prdName[x].jumlah_barang;   
                         document.getElementById('jenis_barang').value = prdName[x].jenis_barang;   
                         document.getElementById('satuan').value = prdName[x].satuan;
+                        document.getElementById('harga_barang_satuan').value = prdName[x].harga_satuan;
                         document.getElementById('nama_barang').value = prdName[x].nama_barang;
                     };
                   function formatRupiah(angka, prefix)
