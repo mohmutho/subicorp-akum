@@ -56,8 +56,8 @@ class Riwayat_transaksi extends CI_Controller {
 		$data['sql'] = $this->db->query("SELECT * FROM hutang WHERE jenis_hutang = 'usaha' AND iduser = ".$this->session->userdata('id')."");
 		$data['sql2'] = $this->db->query("SELECT * FROM hutang WHERE jenis_hutang = 'lainnya' AND iduser = ".$this->session->userdata('id')."");
 		$data['sql3'] = $this->db->query("SELECT * FROM hutang WHERE jenis_hutang = 'bank' AND iduser = ".$this->session->userdata('id')."");
-		$data['sql4'] = $this->db->query("SELECT *, bh.keterangan as ket FROM hutang h JOIN bayar_hutang bh ON h.id = bh.hutang_id WHERE h.jenis_hutang = 'usaha' AND iduser = ".$this->session->userdata('id')."");
-		$data['sql5'] = $this->db->query("SELECT *, bh.keterangan as ket FROM hutang h JOIN bayar_hutang bh ON h.id = bh.hutang_id WHERE h.jenis_hutang != 'usaha' AND iduser = ".$this->session->userdata('id')."");
+		$data['sql4'] = $this->db->query("SELECT *, bh.keterangan as ket FROM hutang h JOIN bayar_hutang bh ON h.id = bh.hutang_id WHERE h.jenis_hutang = 'usaha' AND h.iduser = ".$this->session->userdata('id')."");
+		$data['sql5'] = $this->db->query("SELECT *, bh.keterangan as ket FROM hutang h JOIN bayar_hutang bh ON h.id = bh.hutang_id WHERE h.jenis_hutang != 'usaha' AND h.iduser = ".$this->session->userdata('id')."");
 		$data['sidebar'] = $this->load->view('layouts/sidebar_dashboard','',true);
         $data['pages'] = $this->load->view('pages/riwayat_transaksi/data_hutang',array('main'=>$data),true);
 		$this->load->view('main_dashboard',array('main'=>$data));
@@ -67,8 +67,8 @@ class Riwayat_transaksi extends CI_Controller {
 		$data['title'] = 'Akum';
 		$data['sql'] = $this->db->query("SELECT * FROM piutang WHERE jenis_piutang = 'usaha' AND iduser = ".$this->session->userdata('id')."");
 		$data['sql2'] = $this->db->query("SELECT * FROM piutang WHERE jenis_piutang = 'lainnya' AND iduser = ".$this->session->userdata('id')."");
-		$data['sql3'] = $this->db->query("SELECT *, bp.keterangan as ket FROM piutang p JOIN bayar_piutang bp ON p.id = bp.piutang_id WHERE p.jenis_piutang = 'usaha' AND iduser = ".$this->session->userdata('id')."");
-		$data['sql4'] = $this->db->query("SELECT *, bp.keterangan as ket FROM piutang p JOIN bayar_piutang bp ON p.id = bp.piutang_id WHERE p.jenis_piutang != 'usaha' AND iduser = ".$this->session->userdata('id')."");
+		$data['sql3'] = $this->db->query("SELECT *, bp.keterangan as ket FROM piutang p JOIN bayar_piutang bp ON p.id = bp.piutang_id WHERE p.jenis_piutang = 'usaha' AND h.iduser = ".$this->session->userdata('id')."");
+		$data['sql4'] = $this->db->query("SELECT *, bp.keterangan as ket FROM piutang p JOIN bayar_piutang bp ON p.id = bp.piutang_id WHERE p.jenis_piutang != 'usaha' AND h.iduser = ".$this->session->userdata('id')."");
 		$data['sidebar'] = $this->load->view('layouts/sidebar_dashboard','',true);
         $data['pages'] = $this->load->view('pages/riwayat_transaksi/data_piutang',array('main'=>$data),true);
 		$this->load->view('main_dashboard',array('main'=>$data));

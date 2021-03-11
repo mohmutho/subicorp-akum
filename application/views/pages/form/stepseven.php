@@ -96,7 +96,7 @@
             <div class="row">
               <div class="col-sm-2"></div>
               <div class="col-sm-8">
-                <label>Nilai Aktiva Lainnya</label>
+                <label>Nilai Aktiva Lainnya (Per Unit)</label>
                 <input type="text" id="nilai_activa" placeholder="Nilai Activa Lainnya" name="nilai_activa" value="<?php echo $nilai_activa_fix;?>">
                 <input type="text" class="span-block" readonly value="Rp. <?php echo $nilai_activa;?>" id="nl_act">
               </div>

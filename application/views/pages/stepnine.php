@@ -84,7 +84,7 @@
       <div class="row">
         <div class="col-sm-12">
           <label>Nilai Hutang</label>
-          <input type="text" placeholder="Nilai Piutang" name="nilai_hutang" id="nilai_hutang" required>
+          <input type="text" placeholder="Nilai Hutang" name="nilai_hutang" id="nilai_hutang" required>
           <input type="text" id="nl_hutang" value="Rp 0" class="span-block" readonly>
         </div>
       </div><br>
@@ -174,8 +174,8 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <label>Bukti Transaksi</label>
-            <input type="file" name="bukti_transaksi">
+            <label>Ganti Bukti Transaksi</label>
+            <input type="file" name="bukti_transaksi"><span>Current File : <?php echo $bukti_transaksi;?></span>
           </div>
         </div>
         <div class="row">

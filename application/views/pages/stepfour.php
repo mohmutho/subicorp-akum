@@ -21,6 +21,7 @@
                   <th>Jenis Persediaan</th>
                   <th>Nama Persediaan</th>
                   <th>Jumlah</th>
+                  <th>Satuan</th>
                   <th>Total Nilai Persediaan</th>
                   <th>Harga Rata-Rata</th>
                   <th>Aksi</th>
@@ -37,6 +38,7 @@
                       <td><?php echo $obj->jenis_barang;?></td>
                       <td><?php echo $obj->nama_barang;?></td>
                       <td><?php echo number_format($obj->jumlah_barang,0, '', '.');?></td>
+                      <td><?php echo $obj->satuan;?></td>
                       <td><?php echo number_format($obj->total_nilai_barang,0, '', '.');?></td>
                       <td><?php echo number_format($obj->total_nilai_barang / $obj->jumlah_barang,0, '', '.');?></td>
                       <td>

@@ -20,7 +20,6 @@ function rupiah($angka){
           STEP 1
         </h1>
       </section>
-
       <section class="content">
         <p>Masukan Saldo KAS, Saldo Bank dan Nilai surat berharga Anda saat ini : </p>
       </section>
@@ -39,6 +38,8 @@ function rupiah($angka){
       <div class="row">
         <div class="col-sm-11">
           <label>Masukan saldo bank</label>
+          <br>
+          <span>Apabila tidak memiliki, silahkan isikan nilai 0</span>
           <input type="text" name="saldo_bank" id="saldo_bank" placeholder="Saldo Bank" style="background: #FFF5AB;" value="<?= $saldo_bank;?>" required>
           <input type="text" id="sld_bk" value="Rp. <?php if($saldo_bank==''){ echo 0;}else{ echo rupiah($saldo_bank); } ?>" class="span-block" readonly>
         </div>
@@ -46,6 +47,8 @@ function rupiah($angka){
       <div class="row">
         <div class="col-sm-11">
           <label>Masukan nilai surat berharga</label>
+          <br>
+          <span>Apabila tidak memiliki, silahkan isikan nilai 0</span>
           <input type="text" name="surat_berharga" id="surat_berharga" placeholder="Surat Berharga" style="background: #FFF5AB;" value="<?= $surat_berharga;?>" required>
           <input type="text" id="srt_hrg" value="Rp. <?php if($surat_berharga==''){ echo 0;}else{ echo rupiah($surat_berharga); } ?>" class="span-block" readonly>
         </div>
@@ -86,6 +89,7 @@ function rupiah($angka){
   });
   
   /* Fungsi */
+
   function formatRupiah(angka, prefix)
   {
     var number_string = angka.replace(/[^,\d]/g, '').toString(),

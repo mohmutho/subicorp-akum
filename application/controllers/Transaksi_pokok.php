@@ -30,8 +30,9 @@ class Transaksi_pokok extends CI_Controller {
 	// Pembelian
 	public function pembelian(){
 		$data['title'] = 'Akum';
+    $data['sql'] = $this->db->query("SELECT * FROM barang_dagangan WHERE iduser = ".$this->session->userdata('id')."");
 		$data['sidebar'] = $this->load->view('layouts/sidebar_dashboard','',true);
-        $data['pages'] = $this->load->view('pages/transaksi_pokok/pembelian','',true);
+    $data['pages'] = $this->load->view('pages/transaksi_pokok/pembelian','',true);
 		$this->load->view('main_dashboard',array('main'=>$data));
 	}
 	function create_transaksi_pokok_pembelian() {
@@ -41,18 +42,36 @@ class Transaksi_pokok extends CI_Controller {
 		foreach ($query_sld->result() as $val2) {
 			$saldo_kas += $val2->saldo_kas;
 		}
-
-		$idbarang = $this->input->post('idbarang');
-		$query_brg = $this->db->query('SELECT * FROM barang_dagangan where id = "'.$idbarang.'"');
-		$jml_brg = 0;
+    $nama_barang = $this->input->post('nama_barang');
+    $jenis_barang = $this->input->post('jenis_barang');
+		// $idbarang = $this->input->post('idbarang');
+		$query_brg = $this->db->query('SELECT * FROM barang_dagangan where nama_barang = "'.$nama_barang.'"');
+    // $query_brg2 = $this->db->query('SELECT * FROM barang_dagangan where id = "'.$idbarang.'"');
+    $flag = true;
+    $jml_brg = 0;
 		$ttl_nilai = 0;
 		$hrg_stuan = 0;
+    $hrg_total = 0;
 		foreach ($query_brg->result() as $val) {
 			$jml_brg += $val->jumlah_barang;
 			$ttl_nilai += $val->total_nilai_barang;
 			$hrg_stuan += $val->harga_satuan;
+      $hrg_total += $val->total_harga_barang;
+      $idbarang = $val->id;
+      $nama_brg = $val->nama_barang;
+      $jenis_brg = $val->jenis_barang;
+      if($nama_brg == $nama_barang && $jenis_brg == $jenis_barang){
+        $flag = false;
+      }
 		}
-		$tipe_pembayaran = $this->input->post('tipe_pembayaran');
+    // foreach ($query_brg->result() as $val) {
+		// 	$jml_brg += $val->jumlah_barang;
+		// 	$ttl_nilai += $val->total_nilai_barang;
+		// 	$hrg_stuan += $val->harga_satuan;
+    //   $hrg_total += $val->total_harga_barang;
+    // }
+		
+    $tipe_pembayaran = $this->input->post('tipe_pembayaran');
 
 		$filename = date("YmdHis")."_".$id;
 		$config = array(
@@ -77,21 +96,20 @@ class Transaksi_pokok extends CI_Controller {
 		$finfo = $this->upload->data();
 		$bukti_hutang = $finfo['file_name'];
 
-    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
 		$tanggal_transaksi = explode("-",$this->input->post('tanggal_pembelian'));
-
-		if ($tanggal_transaksi[2]>=15) {
-			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
-		}else{
-			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
-		}
-		if ($hitung<12) {
-          $status = "Jangka Pendek";
-        } else if($hitung>=12){
-          $status = "Jangka Panjang";
-        }
+    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
+    if ((int)$tanggal_transaksi[2]>=15) {
+      $hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
+    }else{
+      $hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
+    }
+    if ($hitung<12) {
+      $status = "Jangka Pendek";
+    } else if($hitung>=12){
+      $status = "Jangka Panjang";
+    }
 
 		if ($tipe_pembayaran=='Cash') {
 			// Saldo Kas
@@ -103,7 +121,7 @@ class Transaksi_pokok extends CI_Controller {
 			$cash = $this->input->post('total_harga');
 			$kredit = "";
 		}else if ($tipe_pembayaran=='Kredit') {
-			// Hutang
+      // Hutang
 			$data_hutang = array(
 				'iduser' => $id,
 				'nama_hutang' => $this->input->post('pembelian_dari'),
@@ -120,7 +138,8 @@ class Transaksi_pokok extends CI_Controller {
 			$cash = "";
 			$kredit = $this->input->post('total_harga');
 		}else if ($tipe_pembayaran=='Cash dan Kredit') {
-			// Saldo Kas
+			
+      // Saldo Kas
 			$data_saldo_kas = array(
 				'iduser' => $id,
 				'saldo_kas' => $saldo_kas - $this->input->post('cash'),
@@ -144,7 +163,9 @@ class Transaksi_pokok extends CI_Controller {
 			$kredit = $this->input->post('sisa_kredit');
 		}
 
-		if ($idbarang==0) {
+
+
+		if ($flag) {
 			// Pembelian
 			$data_pembelian = array(
 				'iduser' => $id,
@@ -207,12 +228,13 @@ class Transaksi_pokok extends CI_Controller {
 			$data_barang_dagangan = array(
 				'id' => $idbarang,
 				'jumlah_barang' => $jml_brg + $this->input->post('jumlah'),
-				'harga_satuan' => $hrg_stuan + $this->input->post('harga_barang'),
-				'total_nilai_barang' => $ttl_nilai + $this->input->post('total_harga'),
+				'harga_satuan' => $this->input->post('harga_barang'),
+				'total_nilai_barang' => $ttl_nilai + $this->input->post('nilai_barang'),
+        'total_harga_barang' => $hrg_total + $this->input->post('total_harga')
 			);
 			$this->m_akum->edit_barang_dagang($idbarang,$data_barang_dagangan);
 		}
-        $this->session->set_flashdata('notif','<div class="alert alert-success alert-dismissible"><strong> Transaksi Pembelian berhasil. </strong><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>');
+      $this->session->set_flashdata('notif','<div class="alert alert-success alert-dismissible"><strong> Transaksi Pembelian berhasil. </strong><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>');
 		redirect('transaksi_pokok/pembelian');
 	}
 
@@ -222,7 +244,7 @@ class Transaksi_pokok extends CI_Controller {
 		$data['sql'] = $this->db->query("SELECT * FROM barang_dagangan WHERE iduser = ".$this->session->userdata('id')."");
 		$data['sql2'] = $this->db->query("SELECT * FROM saldo_kas WHERE iduser = ".$this->session->userdata('id')."");
 		$data['sidebar'] = $this->load->view('layouts/sidebar_dashboard','',true);
-        $data['pages'] = $this->load->view('pages/transaksi_pokok/penjualan',array('main'=>$data),true);
+    $data['pages'] = $this->load->view('pages/transaksi_pokok/penjualan',array('main'=>$data),true);
 		$this->load->view('main_dashboard',array('main'=>$data));
 	}
 	function create_transaksi_pokok_penjualan() {
@@ -256,19 +278,18 @@ class Transaksi_pokok extends CI_Controller {
 
     $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
 		$tanggal_transaksi = explode("-",$this->input->post('tanggal_penjualan'));
-
-		if ($tanggal_transaksi[2]>=15) {
-			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
-		}else{
-			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
-		}
-		if ($hitung<12) {
-          $status = "Jangka Pendek";
-        } else if($hitung>=12){
-          $status = "Jangka Panjang";
-        }
+    if ((int)$tanggal_transaksi[2]>=15) {
+      $hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
+    }else{
+      $hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
+    }
+    if ($hitung<12) {
+      $status = "Jangka Pendek";
+    } else if($hitung>=12){
+      $status = "Jangka Panjang";
+    }
 
 		if ($tipe_pembayaran=='Cash') {
 			// Saldo Kas
@@ -282,7 +303,7 @@ class Transaksi_pokok extends CI_Controller {
     }
     
     else if ($tipe_pembayaran=='Kredit') {
-			// Piutang
+      // Piutang
       $data_piutang = array(
         'iduser' => $id,
         'jenis_piutang' => "usaha",
@@ -301,7 +322,7 @@ class Transaksi_pokok extends CI_Controller {
     }
     
     else if ($tipe_pembayaran=='Cash dan Kredit'){
-			// Saldo Kas
+      // Saldo Kas
       $data_saldo = array(
         'iduser' => $id,
         'saldo_kas' => $saldo_kas+$this->input->post('cash')
@@ -352,7 +373,8 @@ class Transaksi_pokok extends CI_Controller {
 		// Barang Dagangan
         $data_barang = array(
         	'jumlah_barang' => $this->input->post('jumlah') - $this->input->post('jumlah_barang'),
-        	'total_nilai_barang' => ($this->input->post('jumlah')*$this->input->post('harga_barang_satuan')) - ($this->input->post('harga_barang_satuan')*$this->input->post('jumlah_barang'))
+        	'total_nilai_barang' => ($this->input->post('jumlah')*$this->input->post('harga_barang_satuan')) - ($this->input->post('harga_barang_satuan')*$this->input->post('jumlah_barang')),
+          'total_harga_barang' => $this->input->post('total_harga_brg') - $this->input->post('total_harga')
         );
         $this->m_akum->edit_barang_dagang($id_barang,$data_barang);
 

@@ -174,14 +174,14 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <label>Bukti Transaksi</label>
-            <input type="file" name="bukti_transaksi">
+            <label>Ganti Bukti Transaksi</label>
+            <input type="file" name="bukti_transaksi"><span>Current File : <?php echo $bukti_transaksi;?></span>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-12">
             <label>Keterangan</label>
-            <textarea name="keterangan" cols="20" rows="5" placeholder="Keterangan"><?php echo $keterangan;?></textarea>
+            <textarea name="keterangan" cols="20" rows="5" placeholder="Keterangan" value="<?php echo $keterangan;?>"><?php echo $keterangan; ?></textarea>
           </div>
         </div>
       </div>

@@ -26,12 +26,12 @@ class Stepthree extends CI_Controller {
 		$tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
 		$tanggal_transaksi = explode("-",$this->input->post('tanggal_transaksi'));
 
-		if ($tanggal_transaksi[2]>=15) {
-			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		if ((int)$tanggal_transaksi[2]>=15) {
+			$hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}else{
-			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+			$hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}
 		if ($hitung<12) {
           $status = "Jangka Pendek";
@@ -72,12 +72,12 @@ class Stepthree extends CI_Controller {
 		$tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
 		$tanggal_transaksi = explode("-",$this->input->post('tanggal_transaksi'));
 
-		if ($tanggal_transaksi[2]>=15) {
-			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		if ((int)$tanggal_transaksi[2]>=15) {
+			$hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}else{
-			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+			$hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}
 		if ($hitung<12) {
           $status = "Jangka Pendek";

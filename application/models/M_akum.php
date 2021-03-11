@@ -24,7 +24,7 @@ class M_akum extends CI_Model {
         $this->db->insert('saldo_kas',$data);
     }
     function update_saldo_kas($id,$data){
-        $this->db->where("iduser",$id);
+        $this->db->where('iduser',$id);
         $this->db->update('saldo_kas',$data);
     }
 

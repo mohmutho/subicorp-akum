@@ -20,6 +20,10 @@
   foreach($main['biaya']->result() as $obj){
       $total_biaya+= $obj->nilai;
   }
+  $dividen=0;
+  foreach($main['dividen']->result() as $obj){
+      $dividen+= $obj->nilai_dividen;
+  }
 ?>
 <div class="row">
   <div class="col-sm-12">
@@ -28,7 +32,7 @@
         <h1>
           FINISH
         </h1>
-        <p>NERACA SALDO</p>
+        <p>NERACA</p>
       </section>
 
       <section class="content">
@@ -37,7 +41,7 @@
             <!-- <div class="box-title"><a href="#" data-toggle="modal" data-target="#myModal" class="btn btn-akumm"><i class="fa fa-plus"></i> Tambah Aktiva Lainnya</a></div> -->
           </div>
           <div class="box-body">
-              <h3 class="text-center">
+          <h3 class="text-center">
                 Neraca Saldo
               </h3>
               <h4 class="text-center"><?php echo $this->session->userdata('nama');?></h4>
@@ -93,11 +97,22 @@
                     <td></td>
                   </tr>
                   <tr>
+                    <td>Piutang Lainnya</td>
+                    <?php
+                    $piutang_lainnya=0;
+                    foreach($main['piutang_lainnya']->result() as $obj){
+                        $piutang_lainnya+= $obj->nilai_piutang;
+                    }
+                    ?>
+                    <td class="text-right">Rp. <?php echo number_format($piutang_lainnya,0,'','.');?></td>
+                    <td></td>
+                  </tr>
+                  <tr>
                     <td>Persediaan</td>
                     <?php
                     $persediaan=0;
                     foreach($main['persediaan']->result() as $obj){
-                        $persediaan+= $obj->harga_satuan*$obj->jumlah_barang;
+                        $persediaan+= $obj->total_harga_barang;
                     }
                     ?>
                     <td class="text-right">Rp. <?php echo number_format($persediaan,0,'','.')?></td>
@@ -117,7 +132,7 @@
                   <tr>
                     <td><b>Jumlah Aktiva Lancar</b></td>
                     <td></td>
-                    <td class="text-right">Rp. <?php echo number_format($saldo_kas+$saldo_bank+$piutang_dagang+$piutang_retur+$persediaan+$persediaan_lainnya,0,'','.');?></td>
+                    <td class="text-right">Rp. <?php echo number_format($saldo_kas+$saldo_bank+$piutang_dagang+$piutang_retur+$piutang_lainnya+$persediaan+$persediaan_lainnya,0,'','.');?></td>
                   </tr>
                 <!-- END Aktiva Lancar -->
                 <!-- Aktiva Tetap -->
@@ -148,8 +163,7 @@
                     <td></td>
                     <td class="text-right">Rp. <?php echo number_format($jml_activa_tetap,0,'','.');?></td>
                   </tr>
-                <!-- END Aktiva Tetap -->
-                <!-- Aktiva Lainnya -->
+                  <!-- Aktiva Lainnya -->
                 <tr>
                     <td colspan="3"><b>Aktiva Lainnya</b></td>
                   </tr>
@@ -181,8 +195,9 @@
                   <tr>
                     <td><b>Jumlah Aktiva</b></td>
                     <td></td>
-                    <td class="text-right">Rp. <?php echo number_format($jml_activa_tetap+$jml_activa_lainnya_total+$saldo_kas+$saldo_bank+$piutang_dagang+$piutang_retur+$persediaan+$persediaan_lainnya,0,'','.');?></td>
+                    <td class="text-right">Rp. <?php echo number_format($jml_activa_tetap+$jml_activa_lainnya_total+$saldo_kas+$saldo_bank+$piutang_dagang+$piutang_retur+$piutang_lainnya+$persediaan+$persediaan_lainnya,0,'','.');?></td>
                   </tr>
+                <!-- END Aktiva Tetap -->
                 </tbody>
               </table>
               <table class="table table-bordered table-striped">
@@ -235,9 +250,20 @@
                     <td></td>
                   </tr>
                   <tr>
+                    <td>Hibah</td>
+                    <?php
+                    $hibah=0;
+                    foreach($main['hibah']->result() as $obj){
+                      $hibah+= $obj->nilai_barang;
+                    }
+                    ?>
+                    <td class="text-right">Rp. <?php echo number_format($hibah,0,'','.');?></td>
+                    <td></td>
+                  </tr>
+                  <tr>
                     <td><b>Jumlah Kewajiban Lancar</b></td>
                     <td></td>
-                    <td class="text-right">Rp. <?php echo number_format($hutang_dagang+$hutang_retur+$hutang_lainnya,0,'','.');?></td>
+                    <td class="text-right">Rp. <?php echo number_format($hutang_dagang+$hutang_retur+$hutang_lainnya+$hibah,0,'','.');?></td>
                   </tr>
                 <!-- END Kewajiban Lancar -->
                 <!-- Kewajiban Jangka Panjang -->
@@ -279,18 +305,22 @@
                     <td class="text-right">Rp. <?php echo number_format($modal_pemilik,0,'','.')?></td>
                   </tr>
                   <tr>
+                    <td>Dividen</td>
+                    <td class="text-right">Rp. <?php echo number_format($dividen,0,'','.')?></td>
+                  </tr>
+                  <tr>
                     <td>Laba Rugi</td>
                     <td class="text-right">Rp. <?php echo number_format(((($barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)-(((($barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)*0.5/100),0,'','.');?></td>
                   </tr>
                   <tr>
                     <td><b>Jumlah Equity</b></td>
                     <td></td>
-                    <td class="text-right">Rp. <?php echo number_format(((($surat_berharga+$barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)-(((($barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)*0.5/100)+$modal_pemilik,0,'','.');?></td>
+                    <td class="text-right">Rp. <?php echo number_format(((($surat_berharga+$barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)-(((($barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)*0.5/100)+$modal_pemilik+$dividen,0,'','.');?></td>
                   </tr>
                   <tr>
                     <td><b>Jumlah Kewajiban dan Modal</b></td>
                     <td></td>
-                    <td class="text-right">Rp. <?php echo number_format((((($surat_berharga+$barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)-(((($barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)*0.5/100)+$modal_pemilik)+($hutang_dagang+$hutang_retur+$hutang_lainnya)+$hutang_bank,0,'','.');?></td>
+                    <td class="text-right">Rp. <?php echo number_format((((($surat_berharga+$barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)-(((($barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)*0.5/100)+$modal_pemilik)+($hutang_dagang+$hutang_retur+$hutang_lainnya+$hibah)+$hutang_bank,0,'','.');?></td>
                   </tr>
                 <!-- END Equity -->
                 </tbody>

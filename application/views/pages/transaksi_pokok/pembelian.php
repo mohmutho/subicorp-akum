@@ -149,7 +149,7 @@
                     <div class="form-group">
                         <label for="inputName" class="col-sm-2 control-label">Tanggal Jatuh Tempo</label>
                         <div class="col-sm-10">
-                            <input type="text" name="tanggal_jatuh_tempo" class="form-controls" id="datepicker2" placeholder="Tanggal Penjualan">
+                            <input type="text" name="tanggal_jatuh_tempo" class="form-controls" id="datepicker2" value="2021-01-01" placeholder="Tanggal Jatuh Tempo">
                         </div>
                     </div>
                 </div>

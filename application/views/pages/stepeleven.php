@@ -26,6 +26,7 @@
       <div class="row">
         <div class="col-sm-11">
           <label>Masukan Saldo Laba/Rugi Anda</label>
+          <br><span>Apabila tidak memiliki, silahkan isikan nilai 0</span>
           <input type="text" name="saldo_labarugi" placeholder="Saldo Laba/Rugi" value="<?php echo $saldo_laba;?>" id="saldo_laba" style="background: #FFF5AB;" required>
           <input type="text" id="sld_lb" value="Rp. <?php echo $saldo_laba2;?>" class="span-block" readonly>
         </div>
@@ -33,6 +34,7 @@
       <div class="row">
         <div class="col-sm-11">
           <label>Masukan Modal Disetor Anda</label>
+          <br><span>Apabila tidak memiliki, silahkan isikan nilai 0</span>
           <input type="text" name="modal_disetor" placeholder="Modal Disetor" id="modal_setor" value="<?php echo $modal_disetor;?>" style="background: #FFF5AB;" required>
           <input type="text" id="mdl_st" value="Rp. <?php echo $modal_disetor2;?>" class="span-block" readonly>
         </div>

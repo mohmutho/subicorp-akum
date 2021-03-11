@@ -89,12 +89,12 @@ class Pemasukan extends CI_Controller {
 		$tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
 		$tanggal_transaksi = explode("-",$this->input->post('tanggal_transaksi'));
 
-		if ($tanggal_transaksi[2]>=15) {
-			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		if ((int)$tanggal_transaksi[2]>=15) {
+			$hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}else{
-			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+			$hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}
 		if ($hitung<12) {
           $status = "Jangka Pendek";
@@ -180,12 +180,12 @@ class Pemasukan extends CI_Controller {
 		$tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
 		$tanggal_transaksi = explode("-",$this->input->post('tanggal_transaksi'));
 
-		if ($tanggal_transaksi[2]>=15) {
-			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		if ((int)$tanggal_transaksi[2]>=15) {
+			$hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}else{
-			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+			$hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}
 		if ($hitung<12) {
           $status = "Jangka Pendek";
@@ -406,12 +406,12 @@ class Pemasukan extends CI_Controller {
 		$tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
 		$tanggal_transaksi = explode("-",$this->input->post('tanggal_transaksi'));
 
-		if ($tanggal_transaksi[2]>=15) {
-			$hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+		if ((int)$tanggal_transaksi[2]>=15) {
+			$hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}else{
-			$hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-			$hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+			$hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+			$hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
 		}
 		if ($hitung<12) {
           $status = "Jangka Pendek";
@@ -456,7 +456,7 @@ class Pemasukan extends CI_Controller {
 
 		// Piutang
 		$data_piutang = array(
-			'iduser' => $id,
+			  'iduser' => $id,
     		'jenis_piutang' => "usaha",
     		'nama_piutang' => $this->input->post('nama_piutang'),
     		'nilai_piutang' => $this->input->post('nilai_piutang'),
@@ -500,7 +500,7 @@ class Pemasukan extends CI_Controller {
 				'status' => 'Jual'
 			);
 			$this->m_akum->edit_activa_tetap($idasset,$data_actetap);
-		}elseif($jenis_asset=="Tanah dan Bangunan"){
+		}else if($jenis_asset=="Tanah dan Bangunan"){
 			$idasset = $this->input->post('id_asset_tanah_dan_bangunan');
 			$query = $this->db->query("SELECT * FROM activa_tetap WHERE jenis_activa='Tanah dan Bangunan' AND id = ".$idasset."");
 			// Activa Lainnya
@@ -508,7 +508,7 @@ class Pemasukan extends CI_Controller {
 				'status' => 'Jual'
 			);
 			$this->m_akum->edit_activa_tetap($idasset,$data_actlain);
-		}elseif($jenis_asset=="BARU"){
+		}else if($jenis_asset=="BARU"){
 			$idasset = $this->input->post('id_asset_lainnya_baru');
 			$query = $this->db->query("SELECT * FROM activa_lainnya WHERE jenis_activa='BARU' AND id = ".$idasset."");
 			// Activa Lainnya
@@ -516,7 +516,7 @@ class Pemasukan extends CI_Controller {
 				'status' => 'Jual'
 			);
 			$this->m_akum->edit_activa_lainnya($idasset,$data_actlain);
-		}elseif($jenis_asset=="BEKAS"){
+		}else if($jenis_asset=="BEKAS"){
 			$idasset = $this->input->post('id_asset_lainnya_bekas');
 			$query = $this->db->query("SELECT * FROM activa_lainnya WHERE jenis_activa='BEKAS' AND id = ".$idasset."");
 			// Activa Lainnya
@@ -550,15 +550,16 @@ class Pemasukan extends CI_Controller {
 		$this->upload->do_upload('photo');
 		$finfo = $this->upload->data();
 		$bukti_piutang = $finfo['file_name'];
+
     $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
     $tanggal_transaksi = explode("-",$this->input->post('tanggal_transaksi'));
 
-    if ($tanggal_transaksi[2]>=15) {
-      $hitung = 1+($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-      $hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+    if ((int)$tanggal_transaksi[2]>=15) {
+      $hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
     }else{
-      $hitung = ($tanggal_jatuh_tempo[0]-$tanggal_transaksi[0])*12;
-      $hitung += $tanggal_jatuh_tempo[1]-$tanggal_transaksi[1];
+      $hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
     }
 
     if ($hitung<12) {
@@ -566,6 +567,7 @@ class Pemasukan extends CI_Controller {
     } else if($hitung>=12){
         $status = "Jangka Panjang";
     }
+
 		if ($tipe_pembayaran=='Cash') {
 			// Saldo Kas
       $data_saldo = array(
@@ -585,6 +587,7 @@ class Pemasukan extends CI_Controller {
         'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
         'tanggal_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
         'status' => $status,
+        'keterangan' => "Piutang dari Transaksi Lainnya",
         'bukti_transaksi' => $bukti_piutang
       );
 			$this->m_akum->create_piutang($data_piutang);

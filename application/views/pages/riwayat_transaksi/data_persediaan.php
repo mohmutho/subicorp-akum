@@ -48,8 +48,8 @@
                               <td><?php echo $obj->jenis_barang;?></td>
                               <td><?php echo $obj->nama_barang;?></td>
                               <td><?php echo number_format($obj->jumlah_barang,0, '', '.');?></td>
-                              <td><?php echo number_format($obj->harga_satuan * $obj->jumlah_barang,0, '', '.');?></td>
-                              <td><?php echo number_format(($obj->harga_satuan * $obj->jumlah_barang) / $obj->jumlah_barang,0, '', '.');?></td>
+                              <td><?php echo number_format($obj->total_harga_barang,0, '', '.');?></td>
+                              <td><?php echo number_format($obj->total_harga_barang / $obj->jumlah_barang,0, '', '.');?></td>
                           </tr>
                         <?php
                             }
@@ -82,8 +82,8 @@
                               <td>LAINNYA</td>
                               <td><?php echo $obj->nama_barang;?></td>
                               <td><?php echo number_format($obj->jumlah_barang,0, '', '.');?></td>
-                              <td><?php echo number_format($obj->harga_satuan * $obj->jumlah_barang,0, '', '.');?></td>
-                              <td><?php echo number_format(($obj->harga_satuan * $obj->jumlah_barang) / $obj->jumlah_barang,0, '', '.');?></td>
+                              <td><?php echo number_format($obj->total_harga_barang,0, '', '.');?></td>
+                              <td><?php echo number_format($obj->total_harga_barang / $obj->jumlah_barang,0, '', '.');?></td>
                           </tr>
                         <?php
                             }

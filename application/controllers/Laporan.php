@@ -44,6 +44,7 @@ class Laporan extends CI_Controller {
 		$data['asset'] = $this->db->query("SELECT * FROM activa_tetap WHERE iduser = ".$this->session->userdata('id')." AND status = 'Jual'");
 		$data['lainnya'] = $this->db->query("SELECT * FROM pemasukan WHERE iduser = ".$this->session->userdata('id')."");
 		$data['biaya'] = $this->db->query("SELECT * FROM biaya WHERE iduser = ".$this->session->userdata('id')."");
+    $data['dividen'] = $this->db->query("SELECT * FROM dividen WHERE iduser = ".$this->session->userdata('id')."");
 
 		$data['sidebar'] = $this->load->view('layouts/sidebar_dashboard','',true);
         $data['pages'] = $this->load->view('pages/laporan_neraca',array('main'=>$data),true);
@@ -82,6 +83,7 @@ class Laporan extends CI_Controller {
 		$data['asset'] = $this->db->query("SELECT * FROM activa_tetap WHERE iduser = ".$this->session->userdata('id')." AND status = 'Jual'");
 		$data['lainnya'] = $this->db->query("SELECT * FROM pemasukan WHERE iduser = ".$this->session->userdata('id')."");
 		$data['biaya'] = $this->db->query("SELECT * FROM biaya WHERE iduser = ".$this->session->userdata('id')."");
+    $data['dividen'] = $this->db->query("SELECT * FROM dividen WHERE iduser = ".$this->session->userdata('id')."");
 
 		$data['sidebar'] = $this->load->view('layouts/sidebar_dashboard','',true);
         $data['pages'] = $this->load->view('pages/cetak/neraca',array('main'=>$data),true);

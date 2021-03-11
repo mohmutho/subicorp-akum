@@ -47,7 +47,8 @@
                                     $sbarang = $obj->satuan;
                                     $nmbarang = $obj->nama_barang;
                                     $jmbarang = $obj->jumlah_barang;
-                                    $harga_satuan = $obj->harga_satuan
+                                    $harga_satuan = $obj->harga_satuan;
+                                    $total_harga_brg = $obj->total_harga_barang;
                             ?>
                             <option value="<?php echo $obj->id;?>">
                                 <?php echo $obj->nama_barang;?>
@@ -57,7 +58,8 @@
                                   "',satuan:'" . addslashes($sbarang) . 
                                   "',nama_barang:'" . addslashes($nmbarang) . 
                                   "',harga_satuan:'" . addslashes($harga_satuan) . 
-                                  "',jumlah_barang:'" . addslashes($jmbarang) . "'};\n";
+                                  "',jumlah_barang:'" . addslashes($jmbarang) . 
+                                  "',total_harga_brg:'" . addslashes($total_harga_brg) . "'};\n";
                                 }
                             ?>
                         </select>
@@ -101,6 +103,7 @@
                     <label for="inputName" class="col-sm-2 control-label">Harga Barang Satuan</label>
                     <div class="col-sm-10">
                         <input readonly type="text" id="harga_barang_satuan" name="harga_barang_satuan" class="form-controls" id="inputName" placeholder="Satuan" required>
+                        <input readonly type="hidden" id="total_harga_brg" name="total_harga_brg" class="span-block" readonly>
                     </div>
                 </div>
                 <div class="form-group">
@@ -181,7 +184,7 @@
                     <div class="form-group">
                         <label for="inputName" class="col-sm-2 control-label">Tanggal Jatuh Tempo</label>
                         <div class="col-sm-10">
-                            <input type="text" name="tanggal_jatuh_tempo" class="form-controls" id="datepicker2" placeholder="Tanggal Penjualan">
+                            <input type="text" name="tanggal_jatuh_tempo" class="form-controls" id="datepicker2" value="2021-01-01" placeholder="Tanggal Penjualan">
                         </div>
                     </div>
                 </div>
@@ -258,6 +261,7 @@
                         document.getElementById('satuan').value = prdName[x].satuan;
                         document.getElementById('harga_barang_satuan').value = prdName[x].harga_satuan;
                         document.getElementById('nama_barang').value = prdName[x].nama_barang;
+                        document.getElementById('total_harga_brg').value = prdName[x].total_harga_brg;
                     };
                   function formatRupiah(angka, prefix)
                     {

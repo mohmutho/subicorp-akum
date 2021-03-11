@@ -19,6 +19,10 @@
   foreach($main['biaya']->result() as $obj){
       $total_biaya+= $obj->nilai;
   }
+  $dividen=0;
+  foreach($main['dividen']->result() as $obj){
+      $dividen+= $obj->nilai_dividen;
+  }
 ?>
         <div class="container">
             <h3 class="text-center">
@@ -43,7 +47,7 @@
                         $saldo_kas = $obj->saldo_kas;
                         $saldo_bank = $obj->saldo_bank;
                         $surat_berharga = $obj->surat_berharga;
-                        $modal_disetor = $onj->modal_disetor;
+                        $modal_disetor = $obj->modal_disetor;
                       ?>
                       <td class="text-right">Rp. <?php echo number_format($saldo_kas,0,'','.');?></td>
                       <?php
@@ -93,7 +97,7 @@
                     <?php
                     $persediaan=0;
                     foreach($main['persediaan']->result() as $obj){
-                        $persediaan+= $obj->harga_satuan * $obj->jumlah_barang;
+                        $persediaan+= $obj->total_harga_barang;
                     }
                     ?>
                     <td class="text-right">Rp. <?php echo number_format($persediaan,0,'','.')?></td>
@@ -277,13 +281,17 @@
                   </tr>
                   <tr>
                     <td>Modal Pemilik</td>
-                    <!-- <?php
+                    <?php
                     $modal_pemilik=0;
                     foreach($main['saldo_kas']->result() as $obj){
                       $modal_pemilik+= $obj->modal_disetor;
                     }
-                    ?>  -->
-                    <td class="text-right">Rp. <?php echo number_format($modal_disetor,0,'','.')?></td>
+                    ?>
+                    <td class="text-right">Rp. <?php echo number_format($modal_pemilik,0,'','.')?></td>
+                  </tr>
+                  <tr>
+                    <td>Dividen</td>
+                    <td class="text-right">Rp. <?php echo number_format($dividen,0,'','.')?></td>
                   </tr>
                   <tr>
                     <td>Laba Rugi</td>
@@ -292,8 +300,9 @@
                   <tr>
                     <td><b>Jumlah Equity</b></td>
                     <td></td>
-                    <td class="text-right">Rp. <?php echo number_format(((($surat_berharga+$barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)-(((($barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)*0.5/100)+$modal_pemilik,0,'','.');?></td>
+                    <td class="text-right">Rp. <?php echo number_format(((($surat_berharga+$barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)-(((($barang_jasa+$asset+$lainnya)-$harga_pokok)-$total_biaya)*0.5/100)+$modal_pemilik+$dividen,0,'','.');?></td>
                   </tr>
+
                   <tr>
                     <td><b>Jumlah Kewajiban dan Modal</b></td>
                     <td></td>

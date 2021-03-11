@@ -83,43 +83,63 @@ class Pengeluaran extends CI_Controller {
 		$finfo = $this->upload->data();
 		$bukti_aclainnya = $finfo['file_name'];
 
+    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
+		$tanggal_transaksi = explode("-",$this->input->post('tanggal_penjualan'));
+    if ((int)$tanggal_transaksi[2]>=15) {
+      $hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
+    }else{
+      $hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
+    }
+    if ($hitung<12) {
+      $status = "Jangka Pendek";
+    } else if($hitung>=12){
+      $status = "Jangka Panjang";
+    }
+
 		if ($tipe_pembayaran=='Cash') {
 			// Saldo Kas
-        	$data_saldo = array(
+      $data_saldo = array(
 				'saldo_kas' => $saldo_kas-$this->input->post('total')
-	    	);
+	    );
 			$this->m_akum->update_saldo_kas($id,$data_saldo);
 			$cash = $this->input->post('total');
 			$kredit = "";
-        }else if ($tipe_pembayaran=='Kredit') {
+    }else if ($tipe_pembayaran=='Kredit') {
 			// Hutang
-        	$data_hutang = array(
-				'iduser' => $id,
+      $data_hutang = array(
+				  'iduser' => $id,
 	    		'jenis_hutang' => "usaha",
 	    		'nama_hutang' => $this->input->post('nama_asset'),
 	    		'nilai_hutang' => $this->input->post('total'),
 	    		'tgl_transaksi' => $this->input->post('tanggal_transaksi'),
-	    		'bukti_transaksi' => $bukti_hutang
-	    	);
+          'tgl_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
+          'keterangan' => $this->input->post('nama_asset'),
+	    		'bukti_transaksi' => $bukti_hutang,
+          'status' => $status
+	    );
 			$this->m_akum->create_hutang($data_hutang);
 			$cash = "";
 			$kredit = $this->input->post('total');
-        }else{
+    }else{
 			// Saldo Kas
-        	$data_saldo = array(
+      $data_saldo = array(
 				'saldo_kas' => $saldo_kas-$this->input->post('cash')
-	    	);
-	        $this->m_akum->update_saldo_kas($id,$data_saldo);
-
+	    );
+	    $this->m_akum->update_saldo_kas($id,$data_saldo);
 			// Hutang
-        	$data_hutang = array(
-				'iduser' => $id,
+      $data_hutang = array(
+				  'iduser' => $id,
 	    		'jenis_hutang' => "usaha",
 	    		'nama_hutang' => $this->input->post('nama_asset'),
 	    		'nilai_hutang' => $this->input->post('sisa_kredit'),
 	    		'tgl_transaksi' => $this->input->post('tanggal_transaksi'),
-	    		'bukti_transaksi' => $bukti_hutang
-	    	);
+          'tgl_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
+          'keterangan' => $this->input->post('nama_asset'),
+	    		'bukti_transaksi' => $bukti_hutang,
+          'status' => $status
+	    );
 			$this->m_akum->create_hutang($data_hutang);
 			$cash = $this->input->post('cash');
 			$kredit = $this->input->post('sisa_kredit');
@@ -175,8 +195,8 @@ class Pengeluaran extends CI_Controller {
 					'kuantitas' => $this->input->post('jumlah'),
 					'tahun_beli' => $this->input->post('tahun_beli_lainnya'),
 					'bulan_sisa' => $this->input->post('bulan_sisa_lainnya'),
-		    		'bulan_terpakai' => $this->input->post('bulan_terpakai_lainnya'),
-		    		'akumulasi_penyusutan' => $this->input->post('akumulasi_penyusutan_lainnya'),
+		    	'bulan_terpakai' => $this->input->post('bulan_terpakai_lainnya'),
+		    	'akumulasi_penyusutan' => $this->input->post('akumulasi_penyusutan_lainnya'),
 					'harga_sisa' => $this->input->post('harga_sisa_lainnya'),
 					'status' => 'Aktif',
 					'bukti_bayar' => $bukti_aclainnya
@@ -194,8 +214,8 @@ class Pengeluaran extends CI_Controller {
 					'tahun_berdiri' => $this->input->post('tahun_berdiri_lainnya'),
 					'tahun_beli' => $this->input->post('tahun_beli_lainnya'),
 					'bulan_sisa' => $this->input->post('bulan_sisa_lainnya'),
-		    		'bulan_terpakai' => $this->input->post('bulan_terpakai_lainnya'),
-		    		'akumulasi_penyusutan' => $this->input->post('akumulasi_penyusutan_lainnya'),
+		    	'bulan_terpakai' => $this->input->post('bulan_terpakai_lainnya'),
+		    	'akumulasi_penyusutan' => $this->input->post('akumulasi_penyusutan_lainnya'),
 					'harga_sisa' => $this->input->post('harga_sisa_lainnya'),
 					'status' => 'Aktif',
 					'bukti_bayar' => $bukti_aclainnya
@@ -210,12 +230,12 @@ class Pengeluaran extends CI_Controller {
 			'jenis_transaksi' => 'Pembelian Asset',
 			'nama_transaksi' => $this->input->post('nama_asset'),
 			'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
-    		'nilai_transaksi' => $this->input->post('total'),
+    	'nilai_transaksi' => $this->input->post('total'),
 			'jenis_pembayaran' => $tipe_pembayaran,
 			'cash' => $cash,
 			'kredit' => $kredit,
     		'bukti_bayar' => $bukti_transaksi
-    	);
+    );
 		$this->m_akum->create_pengeluaran($data_pengeluaran);
 
         $this->session->set_flashdata('notif','<div class="alert alert-success alert-dismissible"><strong> Pembelian Asset berhasil. </strong><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>');
@@ -260,47 +280,68 @@ class Pengeluaran extends CI_Controller {
 		$finfo = $this->upload->data();
 		$bukti_hutang = $finfo['file_name'];
 
+    $tanggal_jatuh_tempo = explode("-",$this->input->post('tanggal_jatuh_tempo'));
+		$tanggal_transaksi = explode("-",$this->input->post('tanggal_penjualan'));
+    if ((int)$tanggal_transaksi[2]>=15) {
+      $hitung = 1+((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
+    }else{
+      $hitung = ((int)$tanggal_jatuh_tempo[0]-(int)$tanggal_transaksi[0])*12;
+      $hitung += (int)$tanggal_jatuh_tempo[1]-(int)$tanggal_transaksi[1];
+    }
+    if ($hitung<12) {
+      $status = "Jangka Pendek";
+    } else if($hitung>=12){
+      $status = "Jangka Panjang";
+    }
+
 		if ($tipe_pembayaran=='Cash') {
 			// Saldo Kas
-        	$data_saldo = array(
+      $data_saldo = array(
 				'saldo_kas' => $saldo_kas-$this->input->post('total')
-	    	);
+	    );
 			$this->m_akum->update_saldo_kas($id,$data_saldo);
 			$cash = $this->input->post('total');
 			$kredit = "";
-        }else if ($tipe_pembayaran=='Kredit') {
+    }else if ($tipe_pembayaran=='Kredit') {
 			// Hutang
-        	$data_hutang = array(
-				'iduser' => $id,
+      $data_hutang = array(
+				  'iduser' => $id,
 	    		'jenis_hutang' => "usaha",
 	    		'nama_hutang' => $this->input->post('nama_biaya'),
 	    		'nilai_hutang' => $this->input->post('total'),
 	    		'tgl_transaksi' => $this->input->post('tanggal_transaksi'),
-	    		'bukti_transaksi' => $bukti_hutang
-	    	);
+          'tgl_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
+          'keterangan' => $this->input->post('nama_biaya'),
+	    		'bukti_transaksi' => $bukti_hutang,
+          'status' => $status
+	    );
 			$this->m_akum->create_hutang($data_hutang);
 			$cash = "";
 			$kredit = $this->input->post('total');
-        }else{
+    }else{
 			// Saldo Kas
-        	$data_saldo = array(
-				'saldo_kas' => $saldo_kas-$this->input->post('cash')
+      $data_saldo = array(
+				'saldo_kas' => $saldo_kas - $this->input->post('cash')
 	    	);
-	        $this->m_akum->update_saldo_kas($id,$data_saldo);
+	    $this->m_akum->update_saldo_kas($id,$data_saldo);
 
 			// Hutang
-        	$data_hutang = array(
-				'iduser' => $id,
+      $data_hutang = array(
+				  'iduser' => $id,
 	    		'jenis_hutang' => "usaha",
 	    		'nama_hutang' => $this->input->post('nama_biaya'),
 	    		'nilai_hutang' => $this->input->post('sisa_kredit'),
 	    		'tgl_transaksi' => $this->input->post('tanggal_transaksi'),
-	    		'bukti_transaksi' => $bukti_hutang
+          'tgl_jatuh_tempo' => $this->input->post('tanggal_jatuh_tempo'),
+          'keterangan' => $this->input->post('nama_biaya'),
+	    		'bukti_transaksi' => $bukti_hutang,
+          'status' => $status
 	    	);
 			$this->m_akum->create_hutang($data_hutang);
 			$cash = $this->input->post('cash');
 			$kredit = $this->input->post('sisa_kredit');
-        }
+    }
 		
 		// Pengeluaran
 		$data_pengeluaran = array(
@@ -308,12 +349,12 @@ class Pengeluaran extends CI_Controller {
 			'jenis_transaksi' => 'Biaya Biaya',
 			'nama_transaksi' => $this->input->post('nama_biaya'),
 			'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
-    		'nilai_transaksi' => $this->input->post('total'),
+    	'nilai_transaksi' => $this->input->post('total'),
 			'jenis_pembayaran' => $tipe_pembayaran,
 			'cash' => $cash,
 			'kredit' => $kredit,
-    		'bukti_bayar' => $bukti_transaksi
-    	);
+    	'bukti_bayar' => $bukti_transaksi
+    );
 		$this->m_akum->create_pengeluaran($data_pengeluaran);
 
 		// Biaya Biaya
@@ -373,7 +414,7 @@ class Pengeluaran extends CI_Controller {
 			'jenis_transaksi' => 'Modal',
 			'nama_transaksi' => 'Modal Diambil',
 			'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
-    		'nilai_transaksi' => $this->input->post('jumlah_modal'),
+    	'nilai_transaksi' => $this->input->post('jumlah_modal'),
 			'jenis_pembayaran' => 'Cash',
 			'cash' => $this->input->post('jumlah_modal'),
     		'bukti_bayar' => $bukti_transaksi
@@ -419,7 +460,7 @@ class Pengeluaran extends CI_Controller {
 
 		// Dividen
 		$data_dividen = array(
-			'iduser' => $id,
+			  'iduser' => $id,
     		'nama_dividen' => $this->input->post('nama_dividen'),
     		'nilai_dividen' => $this->input->post('nilai_dividen'),
     		'tgl_dividen' => $this->input->post('tanggal_transaksi')
@@ -432,11 +473,11 @@ class Pengeluaran extends CI_Controller {
 			'jenis_transaksi' => 'Dividen',
 			'nama_transaksi' => $this->input->post('nama_dividen'),
 			'tanggal_transaksi' => $this->input->post('tanggal_transaksi'),
-    		'nilai_transaksi' => $this->input->post('nilai_dividen'),
+    	'nilai_transaksi' => $this->input->post('nilai_dividen'),
 			'jenis_pembayaran' => 'Cash',
 			'cash' => $this->input->post('nilai_dividen'),
-    		'bukti_bayar' => $bukti_transaksi
-    	);
+    	'bukti_bayar' => $bukti_transaksi
+    );
 		$this->m_akum->create_pengeluaran($data_pengeluaran);
 		
 		// Saldo Kas

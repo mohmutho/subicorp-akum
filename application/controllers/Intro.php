@@ -13,8 +13,7 @@ class Intro extends CI_Controller {
 
 	public function index(){
 		$cek_opening = $this->db->query("SELECT * FROM user WHERE id = ".$this->session->userdata('id')."")->result();
-		foreach ($cek_opening as $open)
-        {
+		foreach ($cek_opening as $open){
         	$intro_dashboard = $open->status_opening;
 		}
 		if($intro_dashboard==1){

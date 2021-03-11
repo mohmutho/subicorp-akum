@@ -174,8 +174,8 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <label>Bukti Transaksi</label>
-            <input type="file" name="bukti_transaksi">
+            <label>Ganti Bukti Transaksi</label>
+            <input type="file" name="bukti_transaksi"><span>Current File : <?php echo $bukti_transaksi;?></span>
           </div>
         </div>
         <div class="row">

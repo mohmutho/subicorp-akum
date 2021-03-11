@@ -16,8 +16,9 @@ class Stepfinish extends CI_Controller {
 		$data['title'] = 'Akum';
 		// Neraca Saldo
 		$data['saldo_kas'] = $this->db->query("SELECT * FROM saldo_kas WHERE iduser = ".$this->session->userdata('id')."");
-		$data['piutang_dagang'] = $this->db->query("SELECT * FROM piutang WHERE iduser = ".$this->session->userdata('id')." AND jenis_piutang != 'retur'");
+		$data['piutang_dagang'] = $this->db->query("SELECT * FROM piutang WHERE iduser = ".$this->session->userdata('id')." AND jenis_piutang = 'usaha'");
 		$data['piutang_retur'] = $this->db->query("SELECT * FROM piutang WHERE iduser = ".$this->session->userdata('id')." AND jenis_piutang = 'retur'");
+		$data['piutang_lainnya'] = $this->db->query("SELECT * FROM piutang WHERE iduser = ".$this->session->userdata('id')." AND jenis_piutang = 'lainnya'");
 		$data['persediaan'] = $this->db->query("SELECT * FROM barang_dagangan WHERE iduser = ".$this->session->userdata('id')."");
 		$data['persediaan_lainnya'] = $this->db->query("SELECT * FROM barang_lainnya WHERE iduser = ".$this->session->userdata('id')."");
 		$data['activa_tetap'] = $this->db->query("SELECT * FROM activa_tetap WHERE iduser = ".$this->session->userdata('id')."");
@@ -25,6 +26,7 @@ class Stepfinish extends CI_Controller {
 		$data['hutang_dagang'] = $this->db->query("SELECT * FROM hutang WHERE iduser = ".$this->session->userdata('id')." AND jenis_hutang = 'usaha'");
 		$data['hutang_retur'] = $this->db->query("SELECT * FROM hutang WHERE iduser = ".$this->session->userdata('id')." AND jenis_hutang = 'retur'");
 		$data['hutang_lainnya'] = $this->db->query("SELECT * FROM hutang WHERE iduser = ".$this->session->userdata('id')." AND jenis_hutang = 'lainnya'");
+		$data['hibah'] = $this->db->query("SELECT * FROM hibah WHERE iduser = ".$this->session->userdata('id')." AND jenis_hibah = 'Pemasukan'");
 		$data['hutang_bank'] = $this->db->query("SELECT * FROM hutang WHERE iduser = ".$this->session->userdata('id')." AND jenis_hutang = 'bank'");
 		
 		// Laba / Rugi
@@ -32,6 +34,7 @@ class Stepfinish extends CI_Controller {
 		$data['asset'] = $this->db->query("SELECT * FROM activa_tetap WHERE iduser = ".$this->session->userdata('id')." AND status = 'Jual'");
 		$data['lainnya'] = $this->db->query("SELECT * FROM pemasukan WHERE iduser = ".$this->session->userdata('id')."");
 		$data['biaya'] = $this->db->query("SELECT * FROM biaya WHERE iduser = ".$this->session->userdata('id')."");
+    $data['dividen'] = $this->db->query("SELECT * FROM dividen WHERE iduser = ".$this->session->userdata('id')."");
 		
 		$data['sidebar'] = $this->load->view('layouts/sidebar','',true);
         $data['pages'] = $this->load->view('pages/stepfinish',array('main'=>$data),true);

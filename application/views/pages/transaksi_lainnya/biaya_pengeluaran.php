@@ -76,6 +76,14 @@
                           </div>
                       </div>
                   </div>
+                  <div id="formdate" style="display : none;">
+                    <div class="form-group">
+                        <label for="inputName" class="col-sm-2 control-label">Tanggal Jatuh Tempo</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="tanggal_jatuh_tempo" class="form-controls" id="datepicker2" value="2021-01-01" placeholder="Tanggal Jatuh Tempo">
+                        </div>
+                    </div>
+                  </div>
                   <div class="form-group">
                       <label for="inputName" class="col-sm-2 control-label"></label>
                       <div class="col-sm-10">
@@ -99,11 +107,17 @@
                       $("#sisa_kredit").attr("value","Rp. "+formatRupiah($("#ss_krdt").val() ));
                     });
                     var x = document.getElementById("formck");
+                    var y = document.getElementById("formdate");
                     function show_value(val){
                       if (val=='Cash dan Kredit') {
                           x.style.display = "block";
+                          y.style.display = "block";
+                      }else if(val=='Kredit'){
+                          x.style.display = "none";
+                          y.style.display = "block";
                       }else{
                           x.style.display = "none";
+                          y.style.display = "none";
                       }
                     }
                     function formatRupiah(angka, prefix)
